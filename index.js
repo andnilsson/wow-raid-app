@@ -76,15 +76,7 @@ app.get('*', function (req, res) {
     res.sendFile(path.resolve('client/index.html'));
 });
 
-// app.listen(process.env.PORT);
+app.listen(process.env.PORT);
 
 
-const server = https.createServer({
-    key: fs.readFileSync('./localhost.key'),
-    cert: fs.readFileSync('./localhost.cert'),
-    requestCert: false,
-    rejectUnauthorized: false
-}, app).listen(process.env.PORT, () => {
-    console.log(`app started on port ${process.env.PORT}`);
-})
 
