@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./stq_/build/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react"
+  },
+  "exclude": [
+    "node_modules",
+    "wwwroot"
+  ]
+}
