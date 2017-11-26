@@ -2,20 +2,13 @@
   "name": "wow-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "engines": {
     "node": ">=6.9.1"
-},
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test\" && exit 1",
-    "webpackdev": "webpack-dev-server --config webpack.wowapp.config.js --open --open-page client/index.html --hot --inline",
-    "proxy": "node .\\node_modules\\dyn365-dev-proxy\\server.js",
-    "watch-wowapp": "webpack -w --config webpack.wowapp.config.js",
-    "start-wowapp": "concurrently \"npm run watch-wowapp\" \"node index.js\"",
-    "build-wowapp": "webpack -p --config webpack.wowapp.config.js"
   },
-  "author": "",
+  "scripts": {
+    "start": "node index.js"    
+  },
+  "author": "and.nil",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
