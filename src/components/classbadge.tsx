@@ -1,23 +1,19 @@
 import * as React from 'react'
-import { Classes } from '../domain/classes';
-import * as en from 'linq';
+import { Classes, getClassColor, getImgUrl } from '../domain/classes';
+
 
 interface props {
     classname: string,
     onClick?: () => void,
     hideBorder?: boolean
 }
-class ClassBadge extends React.Component<props, {}>{
-    getImgUrl(): string {
-        var img = en.from(Classes).firstOrDefault(x => x.name == this.props.classname);
-        if (img) return img.img;
-        return "";
-    }
+class ClassBadge extends React.Component<props, {}>{   
+
     render() {
         return (
             <div onClick={() => this.props.onClick && this.props.onClick()} className={this.props.hideBorder ? "classBadge-noborder" : "classBadge"}>
-                <img src={this.getImgUrl()} />
-                {this.props.classname}
+                <img src={getImgUrl(this.props.classname)} />
+                <span style={{color: getClassColor(this.props.classname)}}>{this.props.classname}</span>
             </div>
         )
     }

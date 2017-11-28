@@ -47,7 +47,7 @@ body{
     box-shadow: 3px 4px 5px 0px #ccc;
     border: 1px solid #ccc;
     cursor: pointer;
-    margin: 12px;
+    margin: 12px;    
 }
 .classBadge-noborder {
     display: flex;    
@@ -67,4 +67,12 @@ body{
 }
 .classBadge:hover{
     border: 1px solid #5493d1;
+}
+.panel {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0;
+    background-color: #FFF;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,.16), 0 0 2px 0 rgba(0,0,0,.12);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.16), 0 0 2px 0 rgba(0,0,0,.12);
 }
