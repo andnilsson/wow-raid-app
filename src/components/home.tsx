@@ -14,7 +14,7 @@ class Home extends React.Component<props, {}>{
     }
 
     getPercentage(needle: string, haystack: en.IEnumerable<string>): number {
-        var g = haystack.groupBy(x => x == needle).firstOrDefault();
+        var g = haystack.where(x => x == needle);
         return (g.count() / haystack.count()) * 100;
 
     }
