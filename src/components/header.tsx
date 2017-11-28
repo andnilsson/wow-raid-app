@@ -13,6 +13,7 @@ class Header extends React.Component<{}, {}>{
                     </h1>
                     <Link to="/characters">My character</Link>
                     <Link to="/members">Members</Link>
+                    <Link to="/rules">FAQ</Link>
                 </div>
 
                 <div className="header-login">

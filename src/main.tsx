@@ -3,6 +3,7 @@ import Clan from './components/clan'
 import Home from './components/home'
 import Header from './components/header'
 import Characters from './components/characters'
+import Rules from './components/rules'
 import { Switch, Route } from 'react-router-dom'
 
 class Main extends React.Component<{}, {}> {
@@ -20,6 +21,7 @@ class Main extends React.Component<{}, {}> {
                         <Route exact path='/' component={Home} />
                         <Route path='/characters' component={Characters} />
                         <Route path='/members' component={Clan} />
+                        <Route path='/rules' component={Rules} />
                     </Switch>
                 </div>
             </div>

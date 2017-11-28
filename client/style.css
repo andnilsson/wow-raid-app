@@ -114,3 +114,76 @@ label{
     width: 400px;
     text-align: justify;
 }
+div.playertable {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    border: 1px solid #1C6EA4;
+    background-color: #EEEEEE;
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  .divTable.playertable .divTableCell, .divTable.playertable .divTableHead {
+    border: 1px solid #AAAAAA;
+    padding: 3px 2px;
+  }
+  .divTable.playertable .divTableBody .divTableCell {
+    font-size: 13px;
+  }
+  .divTable.playertable .divTableRow:nth-child(even) {
+    background: #D0E4F5;
+  }
+  .divTable.playertable .divTableHeading {
+    background: #1C6EA4;
+    background: -moz-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+    background: -webkit-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+    background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+    border-bottom: 1px solid #444444;
+    cursor: pointer;
+  }
+  .divTable.playertable .divTableHeading .divTableHead {
+    font-size: 15px;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-left: 1px solid #D0E4F5;
+  }
+  .divTable.playertable .divTableHeading .divTableHead:first-child {
+    border-left: none;
+  }
+  
+  .playertable .tableFootStyle {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #D0E4F5;
+    background: -moz-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+    background: -webkit-linear-gradient(top, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+    background: linear-gradient(to bottom, #dcebf7 0%, #d4e6f6 66%, #D0E4F5 100%);
+    border-top: 2px solid #444444;
+  }
+  .playertable .tableFootStyle {
+    font-size: 14px;
+  }
+  .playertable .tableFootStyle .links {
+       text-align: right;
+  }
+  .playertable .tableFootStyle .links a{
+    display: inline-block;
+    background: #1C6EA4;
+    color: #FFFFFF;
+    padding: 2px 8px;
+    border-radius: 5px;
+  }
+  .playertable.outerTableFooter {
+    border-top: none;
+  }
+  .playertable.outerTableFooter .tableFootStyle {
+    padding: 3px 5px; 
+  }
+  /* DivTable.com */
+  .divTable{ display: table; }
+  .divTableRow { display: table-row; }
+  .divTableHeading { display: table-header-group;}
+  .divTableCell, .divTableHead { display: table-cell;}
+  .divTableHeading { display: table-header-group;}
+  .divTableFoot { display: table-footer-group;}
+  .divTableBody { display: table-row-group;}

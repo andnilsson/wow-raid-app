@@ -15,18 +15,18 @@ class Home extends React.Component<props, {}>{
 
     getPercentage(needle: string, haystack: en.IEnumerable<string>): number {
         var g = haystack.groupBy(x => x == needle).firstOrDefault();
-        return (g.count() / 100) * 100;
+        return (g.count() / haystack.count()) * 100;
 
     }
 
     getClassesPieChartData() {
         if (this.props.allPlayers.length == 0) return null;
         var self = this;
-        var allClasses = en.from(this.props.allPlayers).select(x => x.class);
-        var data = this.props.allPlayers.map((player, index) => {
+        var allClasses = en.from(this.props.allPlayers).distinct(x => x.class).select(x => x.class);
+        var data = allClasses.toArray().map((c, index) => {
             return {
-                name: player.class,
-                y: self.getPercentage(player.class, allClasses)
+                name: c,
+                y: self.getPercentage(c, en.from(this.props.allPlayers).select(x => x.class))
             }
         })
         return data;
@@ -35,11 +35,11 @@ class Home extends React.Component<props, {}>{
     getFactionPieChartData() {
         if (this.props.allPlayers.length == 0) return null;
         var self = this;
-        var allfactions = en.from(this.props.allPlayers).select(x => x.faction);
-        var data = this.props.allPlayers.map((player, index) => {
+        var allfactions = en.from(this.props.allPlayers).distinct(x => x.faction).select(x => x.faction);
+        var data = allfactions.toArray().map((f, i) => {
             return {
-                name: player.faction,
-                y: self.getPercentage(player.class, allfactions)
+                name: f,
+                y: self.getPercentage(f, en.from(this.props.allPlayers).select(x => x.faction))
             }
         })
         return data;
@@ -67,7 +67,7 @@ class Home extends React.Component<props, {}>{
                         {this.props.isFetchingPlayers ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <PieChart title="class distribution" data={this.getClassesPieChartData()} />}
                     </div>
                     <div className="chartwrapper">
-                        {this.props.isFetchingPlayers ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <PieChart title="faction distribution" data={this.getClassesPieChartData()} />}
+                        {this.props.isFetchingPlayers ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <PieChart title="faction distribution" data={this.getFactionPieChartData()} />}
                     </div>
                 </div>
             </div>
