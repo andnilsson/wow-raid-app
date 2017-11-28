@@ -72,18 +72,18 @@ app.get('*', function (req, res) {
     res.sendFile(path.resolve('client/index.html'));
 });
 
-app.listen(config.PORT);
 
-if (process.env.RUN_SELFSIGNED_HTTPS === "true") {
+if (config.RUN_SELFSIGNED_HTTPS === "true") {
     const server = https.createServer({
         key: fs.readFileSync('./localhost.key'),
         cert: fs.readFileSync('./localhost.cert'),
         requestCert: false,
         rejectUnauthorized: false
-    }, app).listen(process.env.PORT, () => {
-        console.log(`app started on port ${process.env.PORT} with https`);
+    }, app).listen(config.PORT, () => {
+        console.log(`app started on port ${config.PORT} with https`);
     })
 } else {
-    app.listen(process.env.PORT || 80);
+    app.listen(config.PORT);
+    console.log(`app started on port ${config.PORT}`);
 }
 

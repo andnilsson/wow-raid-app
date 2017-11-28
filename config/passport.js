@@ -3,7 +3,7 @@ var BnetStrategy = require('passport-bnet').Strategy;
 var config = require('./keys');
 var users = [];
 
-if (!config.BNET_ID || config.BNET_SECRET) throw "Battle net keys not present in configuration";
+if (!config.BNET_ID || !config.BNET_SECRET) throw "Battle net keys not present in configuration";
 
 passport.serializeUser((user, done) => {
     done(null, user);
