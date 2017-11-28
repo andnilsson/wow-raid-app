@@ -15,6 +15,7 @@ body{
     justify-content: space-between;
     align-items: center;
     color: white;
+    z-index: 10000;
 }
     .header .header-img {
         height: 90px;
@@ -101,4 +102,15 @@ label{
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+.chartwrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 100px;
+    width: 500px;
+}
+.plaintext{
+    width: 400px;
+    text-align: justify;
 }

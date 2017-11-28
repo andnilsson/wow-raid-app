@@ -21,9 +21,10 @@ class Clan extends React.Component<props, {}>{
                 {this.props.allPlayers.map((player, i) => {
                     return (
                         <div className="panel" style={{
+                            border:`1px solid ${getClassColor(player.class)}`,
                             borderLeft: `20px solid ${getClassColor(player.class)}`,
                             paddingTop: "0px",
-                            display: "flex",
+                            display: "flex",                            
                         }} key={i}>
                             <div>
                                 <h2>{player.ownername}</h2>
