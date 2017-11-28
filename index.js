@@ -3,15 +3,18 @@ const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
+const favicon = require('serve-favicon')
 const path = require('path')
 const passport = require('passport')
 const https = require('https')
 const requireLogin = require('./middlewares/requireLogin');
 const fs = require('fs')
 var util = require('util');
+const config = require('./config/keys');
 require('./config/passport');
 
 const app = express()
+app.use(favicon(path.join(__dirname, 'client', 'favicon.ico')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -27,11 +30,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'client/')));
-
-console.log(`bnet id:${process.env.BNET_ID}`);
-console.log(`bnet sercret:${process.env.BNET_SECRET}`);
-console.log(`auth callback:${process.env.AUTHCALLBACK}`);
-console.log(`port:${process.env.PORT}`);
 
 app.get('/auth/bnet', passport.authenticate('bnet'));
 
@@ -76,7 +74,18 @@ app.get('*', function (req, res) {
     res.sendFile(path.resolve('client/index.html'));
 });
 
-app.listen(process.env.PORT || 1337);
 
-
+if (config.RUN_SELFSIGNED_HTTPS === "true") {
+    const server = https.createServer({
+        key: fs.readFileSync('./localhost.key'),
+        cert: fs.readFileSync('./localhost.cert'),
+        requestCert: false,
+        rejectUnauthorized: false
+    }, app).listen(config.PORT, () => {
+        console.log(`app started on port ${config.PORT} with https`);
+    })
+} else {
+    app.listen(config.PORT);
+    console.log(`app started on port ${config.PORT}`);
+}
 

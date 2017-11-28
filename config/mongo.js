@@ -1,6 +1,7 @@
 var mongo = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var connectionstring = process.env.DOCUMENTDB_CONNECTION_STRING
+const config = require('./keys');
+var connectionstring = config.DOCUMENTDB_CONNECTION_STRING;
 
 var repo = {
     saveplayer: async function (player) {
