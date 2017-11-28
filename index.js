@@ -9,6 +9,7 @@ const https = require('https')
 const requireLogin = require('./middlewares/requireLogin');
 const fs = require('fs')
 var util = require('util');
+const config = require('./config/keys');
 require('./config/passport');
 
 const app = express()
@@ -27,11 +28,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'client/')));
-
-console.log(`bnet id:${process.env.BNET_ID}`);
-console.log(`bnet sercret:${process.env.BNET_SECRET}`);
-console.log(`auth callback:${process.env.AUTHCALLBACK}`);
-console.log(`port:${process.env.PORT}`);
 
 app.get('/auth/bnet', passport.authenticate('bnet'));
 
@@ -76,7 +72,7 @@ app.get('*', function (req, res) {
     res.sendFile(path.resolve('client/index.html'));
 });
 
-// app.listen(process.env.PORT || 1337);
+app.listen(config.PORT);
 
 if (process.env.RUN_SELFSIGNED_HTTPS === "true") {
     const server = https.createServer({
