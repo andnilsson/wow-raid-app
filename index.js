@@ -3,6 +3,7 @@ const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
+const favicon = require('serve-favicon')
 const path = require('path')
 const passport = require('passport')
 const https = require('https')
@@ -13,6 +14,7 @@ const config = require('./config/keys');
 require('./config/passport');
 
 const app = express()
+app.use(favicon(path.join(__dirname, 'client', 'favicon.ico')))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
