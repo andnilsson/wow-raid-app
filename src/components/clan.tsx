@@ -22,13 +22,22 @@ class Clan extends React.Component<props, {}>{
                     return (
                         <div className="panel" style={{
                             borderLeft: `20px solid ${getClassColor(player.class)}`,
-                            paddingTop: "0px",                            
+                            paddingTop: "0px",
+                            display: "flex",
                         }} key={i}>
-                            <h2>{player.ownername}</h2>
-                            <ClassBadge hideBorder={true} classname={player.class} />
-                            Faction: {player.faction}<br />
-                            Spec: {player.spec}<br />
-                            PVP enabled server: {player.pvpEnabled ? "Yes" : "No"}<br />
+                            <div>
+                                <h2>{player.ownername}</h2>
+                                <ClassBadge hideBorder={true} classname={player.class} />
+                                Spec: <b>{player.spec}</b><br />
+                                PVP enabled server: <b>{player.pvpEnabled ? "Yes" : "No"}</b><br />
+                            </div>
+                            <div>
+                                <img src={`/img/${player.faction}.png`} style={{
+                                    width: "100px", 
+                                    marginLeft: "20px",
+                                    marginTop: "12px"
+                                    }} />
+                            </div>
                         </div>
                     )
                 })}

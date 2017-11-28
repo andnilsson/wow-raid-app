@@ -10,6 +10,9 @@ type props = IApplicationState & typeof ActionCreators
 import ClassSelector from './classSelector'
 import ClassBadge from './classbadge'
 var PulseLoader = require('halogenium').PulseLoader;
+import ImgButton from './imgbutton'
+
+
 interface state {
     player: domainPlayer,
     classSelectorVisible: boolean
@@ -29,8 +32,8 @@ class Characters extends React.Component<props, state>{
         }
     }
 
-    componentWillReceiveProps(nextProps: props){
-        if(nextProps.currentPlayer){
+    componentWillReceiveProps(nextProps: props) {
+        if (nextProps.currentPlayer) {
             this.setState({
                 player: {
                     ...this.state.player,
@@ -54,39 +57,60 @@ class Characters extends React.Component<props, state>{
         })
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getOwnPlayer();
     }
 
-    render() {        
+    render() {
         if (!this.props.currentUser) return "Please log in join the clan!";
-        if(this.props.isFetchingPlayers) return <PulseLoader color="#26A65B" size="16px" margin="4px" />        
+        if (this.props.isFetchingPlayers) return <PulseLoader color="#26A65B" size="16px" margin="4px" />
         return (
-            <div style={{
-                maxWidth: "400px"
+            <div style={{                
+                display: "flex"
             }}>
-                <Select label="Faction" defaultValue={this.state.player.faction} onChange={(e: any) => { this.setState({ player: { ...this.state.player, faction: e.target.value } }) }}>
-                    <Option value="Horde" label="Horde" />
-                    <Option value="Alliance" label="Alliance" />
-                </Select>
+                <div style={{width: "400px",}}>
+                    <label>Faction:</label> {this.state.player.faction}
+                    <div style={{
+                        display: "flex",
+                        marginBottom: "20px"
+                    }}>
+                        <ImgButton
+                            style={{
+                                width: "72px"
+                            }}
+                            isActive={this.state.player.faction == "Horde"}
+                            imgurl="/img/horde.png"
+                            onClick={() => { this.setState({ player: { ...this.state.player, faction: "Horde" } }) }}
+                        />
+                        <ImgButton
+                            style={{
+                                width: "72px"
+                            }}
+                            isActive={this.state.player.faction == "Alliance"}
+                            imgurl="/img/alliance.png"
+                            onClick={() => { this.setState({ player: { ...this.state.player, faction: "Alliance" } }) }}
+                        />
+                    </div>
 
-                <Select label="Spec" defaultValue={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
-                    <Option value="DPS" label="DPS" />
-                    <Option value="Healer" label="Healer" />
-                    <Option value="Tank" label="Tank" />
-                </Select>
+                    Class:<br />
+                    <ClassBadge classname={this.state.player.class} onClick={() => this.setState({ classSelectorVisible: true })} />
 
-                <Select label="PVP Enabled server" defaultValue={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
-                    <Option value="true" label="Yes" />
-                    <Option value="false" label="No" />
-                </Select>
+                    <Select label="Spec" defaultValue={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
+                        <Option value="DPS" label="DPS" />
+                        <Option value="Healer" label="Healer" />
+                        <Option value="Tank" label="Tank" />
+                    </Select>
 
-                <ClassSelector isVisible={this.state.classSelectorVisible} classWasSelected={(c) => this.classWasSelected(c)} />
+                    <Select label="PVP Enabled server" defaultValue={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
+                        <Option value="true" label="Yes" />
+                        <Option value="false" label="No" />
+                    </Select>
 
-                Class:<br />
-                <ClassBadge classname={this.state.player.class} onClick={() => this.setState({ classSelectorVisible: true })} />
-
-                {this.props.isSavingPlayer ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <Button variant="raised" color="primary" onClick={() => this.props.savePlayer(this.state.player)}>{this.state.player._id ? "Save changes": "Create new character"}</Button>}
+                    {this.props.isSavingPlayer ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <Button variant="raised" color="primary" onClick={() => this.props.savePlayer(this.state.player)}>{this.state.player._id ? "Save changes" : "Create new character"}</Button>}
+                </div>
+                <div style={{width: "300px",}}>
+                    <ClassSelector isVisible={this.state.classSelectorVisible} classWasSelected={(c) => this.classWasSelected(c)} />
+                </div>
             </div>
         )
     }
