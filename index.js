@@ -76,16 +76,29 @@ app.get('*', function (req, res) {
 
 
 if (config.RUN_SELFSIGNED_HTTPS === "true") {
-    const server = https.createServer({
+    var server = https.Server({
         key: fs.readFileSync('./localhost.key'),
         cert: fs.readFileSync('./localhost.cert'),
         requestCert: false,
         rejectUnauthorized: false
-    }, app).listen(config.PORT, () => {
-        console.log(`app started on port ${config.PORT} with https`);
-    })
+    }, app)
 } else {
-    app.listen(config.PORT);
-    console.log(`app started on port ${config.PORT}`);
+    var server = require('http').Server(app);
 }
 
+var io = require('socket.io')(server);
+
+io.on('connection', function (socket) {
+    console.log('a user connected');
+    socket.on('disconnect', function () {
+        console.log('user disconnected');
+    });
+
+    socket.on('chat-message', function (msg) {
+        io.emit('chat-message', msg);
+    });
+});
+
+server.listen(config.PORT, () => {
+    console.log(`app started on port ${config.PORT} with https`);
+})

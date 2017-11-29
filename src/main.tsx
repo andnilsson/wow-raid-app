@@ -5,6 +5,7 @@ import Header from './components/header'
 import Characters from './components/characters'
 import Rules from './components/rules'
 import { Switch, Route } from 'react-router-dom'
+import Chat from './components/chat'
 
 class Main extends React.Component<{}, {}> {
 
@@ -24,6 +25,7 @@ class Main extends React.Component<{}, {}> {
                         <Route path='/rules' component={Rules} />
                     </Switch>
                 </div>
+                <Chat />
             </div>
         )
     }

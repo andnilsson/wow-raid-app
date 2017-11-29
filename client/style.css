@@ -187,3 +187,7 @@ div.playertable {
   .divTableHeading { display: table-header-group;}
   .divTableFoot { display: table-footer-group;}
   .divTableBody { display: table-row-group;}
+
+  .chatwrapper { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+  .chatwrapper input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+  .chatwrapper button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }

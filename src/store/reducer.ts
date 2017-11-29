@@ -2,8 +2,11 @@ import { Reducer } from "redux";
 import User from "../domain/user";
 import { GetUser, SavePlayer, GetOwnPlayer, GetPlayers } from "../service";
 import { Player } from "../domain/player";
+import { ChatActions, SocketHandler } from "../chat/init";
 
 const Actions = {
+    MESSAGE_WAS_SENT: 'MESSAGE_WAS_SENT',
+
     SETUSER: "SETUSER",
     STARTED_AUTHENTICATION: "STARTED_AUTHENTICATION",
 
@@ -28,6 +31,11 @@ const Actions = {
 }
 
 export const ActionCreators = {
+    sendMessge: (message: string) => {
+        return (dispatch: any) => {
+            SocketHandler.sendMessage(message);
+        }
+    },
     savePlayer: (player: Player) => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_SAVING_PLAYER })
@@ -77,7 +85,8 @@ export interface IApplicationState {
     isLoadingUser: boolean,
     isFetchingPlayers: boolean,
     isSavingPlayer: boolean,
-    error: string
+    error: string,
+    messages: string[]
 }
 
 const initalState: IApplicationState = {
@@ -87,11 +96,14 @@ const initalState: IApplicationState = {
     isLoadingUser: false,
     isSavingPlayer: false,
     isFetchingPlayers: false,
-    error: null
+    error: null,
+    messages: []
 }
 
 export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
+
     switch (action.type) {
+        case ChatActions.MESSAGE_WAS_RECIEVED: return { ...state, messages: [state.messages, action.payload] }
         case Actions.STARTED_AUTHENTICATION: return { ...state, isLoadingUser: true }
         case Actions.STARTED_FETCHING_CURR_USER: return { ...state, isLoadingUser: true }
         case Actions.FINISHED_FETCHING_CURR_USER: return {
