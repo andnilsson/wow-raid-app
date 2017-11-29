@@ -114,29 +114,29 @@ label{
     width: 400px;
     text-align: justify;
 }
+
 div.playertable {
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    border: 1px solid #1C6EA4;
-    background-color: #EEEEEE;
+    border: 1px solid #494848;
+    background-color: #565656;
     width: 100%;
     text-align: left;
     border-collapse: collapse;
+    color:white;
   }
   .divTable.playertable .divTableCell, .divTable.playertable .divTableHead {
-    border: 1px solid #AAAAAA;
-    padding: 3px 2px;
+    border: 1px solid #494848;
+    padding: 10px
   }
   .divTable.playertable .divTableBody .divTableCell {
     font-size: 13px;
+    
   }
   .divTable.playertable .divTableRow:nth-child(even) {
-    background: #D0E4F5;
+    background: #464646;
   }
   .divTable.playertable .divTableHeading {
-    background: #1C6EA4;
-    background: -moz-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
-    background: -webkit-linear-gradient(top, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
-    background: linear-gradient(to bottom, #5592bb 0%, #327cad 66%, #1C6EA4 100%);
+    background-color: #494848;    
     border-bottom: 1px solid #444444;
     cursor: pointer;
   }

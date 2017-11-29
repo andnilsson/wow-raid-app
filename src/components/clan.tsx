@@ -1,14 +1,18 @@
 import * as React from 'react';
 import { IApplicationState, ActionCreators } from '../store/reducer';
 import { connect } from 'react-redux';
-import { Classes, getClassColor } from '../domain/classes';
+import { Classes, getClassColor, getImgUrl } from '../domain/classes';
 import ClassBadge from './classbadge'
 import { Player } from '../domain/player';
+var Option = require('muicss/lib/react/option')
+var Select = require('muicss/lib/react/select')
 var PulseLoader = require('halogenium').PulseLoader;
 var Panel = require('muicss/lib/react/panel')
 type props = IApplicationState & typeof ActionCreators
 var Button = require('muicss/react').Button;
 import * as en from 'linq';
+var Input = require('muicss/lib/react/input')
+
 
 const properties = [
     { displayName: "Player", property: "ownername" },
@@ -25,7 +29,7 @@ type state = {
     sortprop?: string,
     isAscending?: boolean,
     filterProp: string,
-    filterValue: string,
+    filterValue: string
 }
 class Clan extends React.Component<props, state>{
     constructor(props: props) {
@@ -35,7 +39,7 @@ class Clan extends React.Component<props, state>{
             sortprop: null,
             isAscending: true,
             filterProp: null,
-            filterValue: null,
+            filterValue: "",
         }
     }
 
@@ -55,13 +59,22 @@ class Clan extends React.Component<props, state>{
             players: this.props.allPlayers,
             sortprop: null,
             isAscending: true,
-            filterProp: null,
-            filterValue: null,
+            filterProp: "ownername",
+            filterValue: "",
         })
     }
 
-    filterTable(prop: string, value: string) {
+    filterTable(value: string) {
+        var property = en.from(properties).where(x => x.property == this.state.filterProp).firstOrDefault();
+        if (!property) return;
 
+        var transform = (property as any).transformation ? (property as any).transformation : (x: any) => { return x };
+
+        var sorted = en.from(this.props.allPlayers).where(x => transform((x as any)[this.state.filterProp]).toLowerCase().indexOf(value.toLowerCase()) > -1).toArray();
+        this.setState({
+            players: sorted,
+            filterValue: value
+        })
     }
 
     sortTable(property: string) {
@@ -93,19 +106,16 @@ class Clan extends React.Component<props, state>{
                 <h1>Players registered so far....</h1>
 
                 <div style={{
-                    padding: "10px",
-                    margin: "10px",
-                    border: "1px solid #ccc"
+                    display: "flex",
                 }}>
-                    sorting on: {this.state.sortprop}<br />
-                    is ascending: {this.state.isAscending ? "yes" : "no"}<br />
-                    filter: 
-                    <select>
-                        {properties.map((p, i) => { 
-                            return <option key={i} value={p.property}>{p.displayName}</option>
+                    <Select label="Filter" defaultValue={this.state.filterProp} onChange={(e: any) => { this.setState({ filterProp: e.target.value }) }}>
+                        {properties.map((p, i) => {
+                            return <Option key={i} value={p.property} label={p.displayName} />
                         })}
-                    </select>
-                    <Button variant="raised" color="primary" onClick={() => this.resetSortAndFilter()}>Reset all</Button>
+                    </Select>
+
+                    <Input label="Contains text" floatingLabel={true} value={this.state.filterValue} onChange={(e: any) => this.filterTable(e.target.value)} />
+                    <Button variant="raised" color="primary" onClick={() => this.resetSortAndFilter()}>Reset all filters</Button>
                 </div>
 
                 <div className="divTable playertable">
@@ -121,9 +131,15 @@ class Clan extends React.Component<props, state>{
                             return (
                                 <div key={i} className="divTableRow">
                                     {properties.map((prop, x) => {
+                                        if (prop.property === "class")
+                                            return <div style={{
+                                                backgroundColor: getClassColor(player.class),                                                
+                                            }} key={x} className="divTableCell"><img style={{height: "30px"}} src={getImgUrl(player.class)} /> {player.class}</div>
+
                                         if ((prop as any).transformation)
                                             return <div key={x} className="divTableCell">{(prop as any).transformation((player as any)[prop.property])}</div>
                                         return <div key={x} className="divTableCell">{(player as any)[prop.property]}</div>
+
                                     })}
                                 </div>
                             )
