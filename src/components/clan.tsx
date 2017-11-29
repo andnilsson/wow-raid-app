@@ -10,6 +10,16 @@ type props = IApplicationState & typeof ActionCreators
 var Button = require('muicss/react').Button;
 import * as en from 'linq';
 
+const properties = [
+    { displayName: "Player", property: "ownername" },
+    { displayName: "Faction", property: "faction" },
+    { displayName: "Class", property: "class" },
+    { displayName: "Spec", property: "spec" },
+    { displayName: "Pvp Enabled", property: "pvpEnabled", transformation: (value: boolean) => { return value ? "Yes" : "No" } },
+    { displayName: "Registered", property: "createdOn" },
+    { displayName: "Status", property: "status" },
+]
+
 type state = {
     players: Player[],
     sortprop?: string,
@@ -31,7 +41,7 @@ class Clan extends React.Component<props, state>{
 
     componentWillReceiveProps(nextProps: props) {
         this.setState({ players: nextProps.allPlayers }, () => {
-            this.sortTable("ownername")
+            this.resetSortAndFilter()
         })
 
     }
@@ -43,8 +53,8 @@ class Clan extends React.Component<props, state>{
     resetSortAndFilter() {
         this.setState({
             players: this.props.allPlayers,
-            sortprop: "ownername",
-            isAscending: false,
+            sortprop: null,
+            isAscending: true,
             filterProp: null,
             filterValue: null,
         })
@@ -59,14 +69,16 @@ class Clan extends React.Component<props, state>{
 
         if (property == this.state.sortprop) {
             if (this.state.isAscending)
-                sorted = en.from(this.props.allPlayers).orderByDescending(x => (x as any)[property]).toArray();
+                sorted = en.from(this.props.allPlayers).orderByDescending(x => (x as any)[property].toString().toLowerCase()).toArray();
             else
-                sorted = en.from(this.props.allPlayers).orderBy(x => (x as any)[property]).toArray();
+                sorted = en.from(this.props.allPlayers).orderBy(x => (x as any)[property].toString().toLowerCase()).toArray();
+
             this.setState({ isAscending: !this.state.isAscending })
         }
-        else
+        else {
             sorted = en.from(this.props.allPlayers).orderBy(x => (x as any)[property]).toArray();
-
+            this.setState({ isAscending: true })
+        }
         this.setState({
             players: sorted,
             sortprop: property
@@ -80,36 +92,39 @@ class Clan extends React.Component<props, state>{
             <div className="playerlist">
                 <h1>Players registered so far....</h1>
 
-                {/* <div style={{
+                <div style={{
                     padding: "10px",
                     margin: "10px",
                     border: "1px solid #ccc"
                 }}>
                     sorting on: {this.state.sortprop}<br />
                     is ascending: {this.state.isAscending ? "yes" : "no"}<br />
-                    filter: {this.state.filterProp ? this.state.filterProp + " = " : "none"}{this.state.filterValue}<br />
+                    filter: 
+                    <select>
+                        {properties.map((p, i) => { 
+                            return <option key={i} value={p.property}>{p.displayName}</option>
+                        })}
+                    </select>
                     <Button variant="raised" color="primary" onClick={() => this.resetSortAndFilter()}>Reset all</Button>
-                </div> */}
+                </div>
 
                 <div className="divTable playertable">
                     <div className="divTableHeading">
                         <div className="divTableRow">
-                            <div className="divTableHead" onClick={() => this.sortTable("ownername")}>Player</div>
-                            <div className="divTableHead" onClick={() => this.sortTable("faction")}>Faction</div>
-                            <div className="divTableHead" onClick={() => this.sortTable("class")}>Class</div>
-                            <div className="divTableHead" onClick={() => this.sortTable("spec")}>Spec</div>
-                            <div className="divTableHead" onClick={() => this.sortTable("pvpEnabled")}>Pvp Enabled</div>
+                            {properties.map((p, i) => {
+                                return <div key={i} className="divTableHead" onClick={() => this.sortTable(p.property)}>{p.displayName}</div>
+                            })}
                         </div>
                     </div>
                     <div className="divTableBody">
                         {this.state.players.map((player, i) => {
                             return (
                                 <div key={i} className="divTableRow">
-                                    <div className="divTableCell">{player.ownername}</div>
-                                    <div className="divTableCell">{player.faction}</div>
-                                    <div className="divTableCell">{player.class}</div>
-                                    <div className="divTableCell">{player.spec}</div>
-                                    <div className="divTableCell">{player.pvpEnabled ? "Yes" : "No"}</div>
+                                    {properties.map((prop, x) => {
+                                        if ((prop as any).transformation)
+                                            return <div key={x} className="divTableCell">{(prop as any).transformation((player as any)[prop.property])}</div>
+                                        return <div key={x} className="divTableCell">{(player as any)[prop.property]}</div>
+                                    })}
                                 </div>
                             )
                         })}
