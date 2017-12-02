@@ -105,10 +105,6 @@ class Clan extends React.Component<props, state>{
             <div className="playerlist">
                 <h1>Players registered so far....</h1>
                 
-                {this.props.messages.map((m, i) =>{
-                    return <div key={i}>message: {m}</div>
-                })}
-
                 <div style={{
                     display: "flex",
                 }}>

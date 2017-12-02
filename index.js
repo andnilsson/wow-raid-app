@@ -19,13 +19,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
-app.use(session({
+// app.use(session({
+//     secret: 'wowapp',
+//     saveUninitialized: true,
+//     resave: true
+// }));
+
+var sessionMiddleware = session({
     secret: 'wowapp',
     saveUninitialized: true,
     resave: true
-}));
-
-
+});
+var onlineusers = [];
+var messages = [];
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -70,6 +77,13 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
+app.get('/api/onlineusers', requireLogin, async (req, res) => {    
+    res.send(onlineusers);
+})
+app.get('/api/messages', requireLogin, async (req, res) => {    
+    res.send(messages.slice(Math.max(messages.length - 50, 1)));
+})
+
 app.get('*', function (req, res) {
     res.sendFile(path.resolve('client/index.html'));
 });
@@ -88,13 +102,37 @@ if (config.RUN_SELFSIGNED_HTTPS === "true") {
 
 var io = require('socket.io')(server);
 
+
+
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next);
+})
+
 io.on('connection', function (socket) {
-    console.log('a user connected');
+    if (!socket.request.session.passport || !socket.request.session.passport.user) return;
+    var user = socket.request.session.passport.user.battletag;
+
+    console.log(user + ' connected');
+    if (onlineusers.indexOf(user) < 0) {
+        onlineusers.push(user);
+        io.emit('went-online', user)
+    }
+
     socket.on('disconnect', function () {
-        console.log('user disconnected');
+        console.log(user + ' disconnected');
+        if (onlineusers.indexOf(user) > -1){
+            onlineusers.splice(onlineusers.indexOf(user));
+            io.emit('went-offline', user);
+        }
     });
 
-    socket.on('chat-message', function (msg) {
+    socket.on('chat-message', function (text) {
+        var msg = {
+            from: user,
+            message: text,
+            time: new Date()
+        }
+        messages.push(msg);
         io.emit('chat-message', msg);
     });
 });
