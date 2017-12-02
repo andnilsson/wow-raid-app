@@ -6,4 +6,6 @@ export class Player {
     _id: string
     ownerid: string
     ownername: string
+    createdOn: Date
+    status: string
 }

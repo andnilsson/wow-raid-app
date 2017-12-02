@@ -1,9 +1,17 @@
 import { Reducer } from "redux";
 import User from "../domain/user";
-import { GetUser, SavePlayer, GetOwnPlayer, GetPlayers } from "../service";
+import { Post, Get } from "../service";
 import { Player } from "../domain/player";
+import { ChatActions, SocketHandler } from "../chat/init";
+import { Message } from "../domain/message";
+import * as en from 'linq';
 
 const Actions = {
+    MESSAGE_WAS_SENT: 'MESSAGE_WAS_SENT',
+    FETCHING_MESSAGES: 'FETCHING_MESSAGES',
+    FETCHED_MESSAGES: 'FETCHED_MESSAGES',
+    FETCHED_ONLINEUSERS: 'FETCHED_ONLINEUSERS',
+
     SETUSER: "SETUSER",
     STARTED_AUTHENTICATION: "STARTED_AUTHENTICATION",
 
@@ -28,10 +36,41 @@ const Actions = {
 }
 
 export const ActionCreators = {
+    fetchMessages: () => {
+        return (async (dispatch: any) => {
+            dispatch({ type: Actions.FETCHING_MESSAGES });
+            var messages = await Get('messages').catch(() => {
+                dispatch({ type: Actions.FETCHED_MESSAGES });
+                return;
+            });
+            dispatch({ type: Actions.FETCHED_MESSAGES, payload: messages });
+        });
+    },
+    fetchOnlineUsers: () => {
+        return (async (dispatch: any) => {
+            var users = await Get('onlineusers');
+            dispatch({ type: Actions.FETCHED_ONLINEUSERS, users });
+        });
+    },
+    sendMessge: (message: string) => {
+        return (dispatch: any) => {
+            SocketHandler.sendMessage(message);
+        }
+    },
+    startedTypingMessage: () => {
+        return (dispatch: any) => {
+            SocketHandler.startedWriting();
+        }
+    },
+    stopedTypingMessage: () => {
+        return (dispatch: any) => {
+            SocketHandler.stoppedWriting();
+        }
+    },
     savePlayer: (player: Player) => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_SAVING_PLAYER })
-            var id = await SavePlayer(player);
+            var id = await Post('player', player);
             dispatch({ type: Actions.FINISHED_SAVING_PLAYER, payload: id })
             dispatch(ActionCreators.getOwnPlayer());
         }
@@ -39,14 +78,14 @@ export const ActionCreators = {
     getOwnPlayer: () => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
-            var player = await GetOwnPlayer();
+            var player = await Get('player');
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
         }
     },
     getAllPlayers: () => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
-            var players = await GetPlayers();
+            var players = await Get('players');
             dispatch({ type: Actions.FINISHED_FETCHING_ALL_PLAYERS, payload: players })
         }
     },
@@ -59,7 +98,7 @@ export const ActionCreators = {
     fetchCurrentUser: () => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_CURR_USER })
-            var user = await GetUser().catch(e => { dispatch({ type: Actions.FAILED_FETCHING_CURR_USER }) });
+            var user = await Get('user').catch(e => { dispatch({ type: Actions.FAILED_FETCHING_CURR_USER }) });
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_USER, payload: user })
         }
     }
@@ -77,7 +116,10 @@ export interface IApplicationState {
     isLoadingUser: boolean,
     isFetchingPlayers: boolean,
     isSavingPlayer: boolean,
-    error: string
+    error: string,
+    messages: Message[],
+    isFetchingMessages: boolean,
+    onlineusers: string[],
 }
 
 const initalState: IApplicationState = {
@@ -87,11 +129,29 @@ const initalState: IApplicationState = {
     isLoadingUser: false,
     isSavingPlayer: false,
     isFetchingPlayers: false,
-    error: null
+    error: null,
+    messages: [],
+    isFetchingMessages: false,
+    onlineusers: []
 }
 
 export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
+
     switch (action.type) {
+        case Actions.FETCHING_MESSAGES: return { ...state, isFetchingMessages: true }
+        case Actions.FETCHED_MESSAGES:
+            var newstate = { ...state, isFetchingMessages: false }
+            if (action.payload)
+                newstate.messages = action.payload
+            return newstate
+        case Actions.FETCHED_ONLINEUSERS:
+            var newstate = { ...state }
+            if (action.payload)
+                newstate.onlineusers = action.payload
+            return newstate;
+        case ChatActions.MESSAGE_WAS_RECIEVED: return { ...state, messages: [...state.messages, action.payload] }
+        case ChatActions.SOMEONE_WENT_ONLINE: return { ...state, onlineusers: [...state.onlineusers, action.payload] }
+        case ChatActions.SOMEOME_WENT_OFFLINE: return { ...state, onlineusers: en.from(state.onlineusers).where(x => x !== action.payload).toArray() }
         case Actions.STARTED_AUTHENTICATION: return { ...state, isLoadingUser: true }
         case Actions.STARTED_FETCHING_CURR_USER: return { ...state, isLoadingUser: true }
         case Actions.FINISHED_FETCHING_CURR_USER: return {
