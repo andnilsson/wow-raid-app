@@ -49,9 +49,9 @@ class Chat extends React.Component<props, state>{
         return (
             <div id="live-chat">
                 <header className="clearfix">
-                    <h4>online:</h4>                     
+                    <h4>online:</h4>                                         
                     {this.props.onlineusers.map((u,i) => {
-                        return <span>{u} </span>
+                        return <span key={i}>{u} </span>
                     })}
                 </header>
 
