@@ -44,7 +44,7 @@ class Chat extends React.Component<props, state>{
             this.props.stopedTypingMessage()
     }
     render() {
-        if (!this.props.currentUser) return null;
+        if (!this.props.currentUser || this.props.currentUser) return null;
 
         return (
             <div id="live-chat">

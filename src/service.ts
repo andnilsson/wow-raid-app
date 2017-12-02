@@ -1,4 +1,4 @@
-export async function Post(path: string, obj: any): Promise<void> {
+export async function Post<T>(path: string, obj: T): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         var data = JSON.stringify(obj);
 
