@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { ActionCreators, IApplicationState } from '../store/reducer';
 import { connect } from 'react-redux';
-
+import * as moment from 'moment'
+var PulseLoader = require('halogenium').PulseLoader;
 
 type props = IApplicationState & typeof ActionCreators
 interface state {
@@ -15,7 +16,23 @@ class Chat extends React.Component<props, state>{
             message: ""
         }
     }
-    send() {
+    scrollToBottom() {
+        var el = document.getElementById("chatcontent");
+        if(el)
+            el.scrollTop = el.scrollHeight;
+    }
+    componentWillReceiveProps(nextprops: props) {
+        if (nextprops.currentUser && !this.props.currentUser) {
+            this.props.fetchOnlineUsers();
+            this.props.fetchMessages();
+        }            
+    }
+
+    componentDidUpdate(){
+        this.scrollToBottom();
+    }
+    send(e: any) {
+        e.preventDefault();
         this.props.sendMessge(this.state.message);
         this.setState({ message: '' })
     }
@@ -27,33 +44,36 @@ class Chat extends React.Component<props, state>{
             this.props.stopedTypingMessage()
     }
     render() {
-        // if(!this.props.currentUser) return null;
+        if (!this.props.currentUser) return null;
 
         return (
             <div id="live-chat">
                 <header className="clearfix">
-                    <a href="#" className="chat-close">x</a>
-                    <h4>chat</h4>
-                    <span className="chat-message-counter">3</span>
+                    <h4>online:</h4>                     
+                    {this.props.onlineusers.map((u,i) => {
+                        return <span>{u} </span>
+                    })}
                 </header>
 
                 <div className="chat">
-                    <div className="chat-history">
+                    <div className="chat-history" id="chatcontent">
+                        {this.props.isFetchingMessages && <PulseLoader color="#26A65B" size="16px" margin="4px" />}
                         {this.props.messages.map((m, i) => {
-                            return <div className="chat-message clearfix">
-                                <div className="chat-message-content clearfix">
-                                    <span className="chat-time">13:35</span>
-                                    <h5>{m.from}</h5>
-                                    <p>{m.message}</p>
+                            return <div key={i} className="chat-message">
+                                <div className="chat-message-content">
+                                    <span><b>{m.from}</b></span>
+                                    <span className="chat-time">{moment(m.time).format('YYYY-MM-DD HH:mm')}</span>
                                 </div>
+                                <p>{m.message}</p>
                                 <hr />
                             </div>
                         })}
 
                     </div>
-
-                    <input type="text" placeholder="Type your message…" value={this.state.message} onChange={(e) => { this.messageOnChange(e.target.value) }} />
-                    <button onClick={() => this.send()} >--></button>
+                    <form onSubmit={(e) => this.send(e)} >
+                        <input type="text" placeholder="skriv något…" value={this.state.message} onChange={(e) => { this.messageOnChange(e.target.value) }} />
+                        <button>skriv</button>
+                    </form>
                 </div>
 
             </div>

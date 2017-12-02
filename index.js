@@ -81,7 +81,7 @@ app.get('/api/onlineusers', requireLogin, async (req, res) => {
     res.send(onlineusers);
 })
 app.get('/api/messages', requireLogin, async (req, res) => {    
-    res.send(messages);
+    res.send(messages.slice(Math.max(messages.length - 50, 1)));
 })
 
 app.get('*', function (req, res) {
@@ -126,13 +126,14 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('chat-message', function (msg) {
-        messages.push(msg);
-        io.emit('chat-message', {
+    socket.on('chat-message', function (text) {
+        var msg = {
             from: user,
-            message: msg,
+            message: text,
             time: new Date()
-        });
+        }
+        messages.push(msg);
+        io.emit('chat-message', msg);
     });
 });
 
