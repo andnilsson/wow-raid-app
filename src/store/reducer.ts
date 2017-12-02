@@ -3,10 +3,11 @@ import User from "../domain/user";
 import { GetUser, SavePlayer, GetOwnPlayer, GetPlayers } from "../service";
 import { Player } from "../domain/player";
 import { ChatActions, SocketHandler } from "../chat/init";
+import { Message } from "../domain/message";
 
 const Actions = {
     MESSAGE_WAS_SENT: 'MESSAGE_WAS_SENT',
-
+    
     SETUSER: "SETUSER",
     STARTED_AUTHENTICATION: "STARTED_AUTHENTICATION",
 
@@ -34,6 +35,16 @@ export const ActionCreators = {
     sendMessge: (message: string) => {
         return (dispatch: any) => {
             SocketHandler.sendMessage(message);
+        }
+    },
+    startedTypingMessage:() => {
+        return(dispatch: any) => {
+            SocketHandler.startedWriting();
+        }
+    },
+    stopedTypingMessage:() => {
+        return(dispatch: any) => {
+            SocketHandler.stoppedWriting();
         }
     },
     savePlayer: (player: Player) => {
@@ -86,7 +97,8 @@ export interface IApplicationState {
     isFetchingPlayers: boolean,
     isSavingPlayer: boolean,
     error: string,
-    messages: string[]
+    messages: Message[],
+
 }
 
 const initalState: IApplicationState = {
@@ -103,7 +115,8 @@ const initalState: IApplicationState = {
 export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
 
     switch (action.type) {
-        case ChatActions.MESSAGE_WAS_RECIEVED: return { ...state, messages: [state.messages, action.payload] }
+        case ChatActions.MESSAGE_WAS_RECIEVED: return { ...state, messages: [...state.messages, action.payload] }
+        case ChatActions.SOMEOME_WENT_OFFLINE: return { ...state, }
         case Actions.STARTED_AUTHENTICATION: return { ...state, isLoadingUser: true }
         case Actions.STARTED_FETCHING_CURR_USER: return { ...state, isLoadingUser: true }
         case Actions.FINISHED_FETCHING_CURR_USER: return {

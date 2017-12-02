@@ -19,11 +19,46 @@ class Chat extends React.Component<props, state>{
         this.props.sendMessge(this.state.message);
         this.setState({ message: '' })
     }
+    messageOnChange(newvalue: string) {
+        this.setState({ message: newvalue })
+        if (newvalue !== '')
+            this.props.startedTypingMessage()
+        else
+            this.props.stopedTypingMessage()
+    }
     render() {
+        // if(!this.props.currentUser) return null;
+
         return (
-            <div className="chatwrapper">
-                <input value={this.state.message} onChange={(e) => { this.setState({ message: e.target.value }) }} /><button onClick={() => { this.send() }}>Send</button>
+            <div id="live-chat">
+                <header className="clearfix">
+                    <a href="#" className="chat-close">x</a>
+                    <h4>chat</h4>
+                    <span className="chat-message-counter">3</span>
+                </header>
+
+                <div className="chat">
+                    <div className="chat-history">
+                        {this.props.messages.map((m, i) => {
+                            return <div className="chat-message clearfix">
+                                <div className="chat-message-content clearfix">
+                                    <span className="chat-time">13:35</span>
+                                    <h5>{m.from}</h5>
+                                    <p>{m.message}</p>
+                                </div>
+                                <hr />
+                            </div>
+                        })}
+
+                    </div>
+
+                    <input type="text" placeholder="Type your message…" value={this.state.message} onChange={(e) => { this.messageOnChange(e.target.value) }} />
+                    <button onClick={() => this.send()} >--></button>
+                </div>
+
             </div>
+
+
         )
     }
 }

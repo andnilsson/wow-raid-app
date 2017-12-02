@@ -19,13 +19,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
-app.use(session({
+// app.use(session({
+//     secret: 'wowapp',
+//     saveUninitialized: true,
+//     resave: true
+// }));
+
+var sessionMiddleware = session({
     secret: 'wowapp',
     saveUninitialized: true,
     resave: true
-}));
+});
 
-
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -88,14 +94,24 @@ if (config.RUN_SELFSIGNED_HTTPS === "true") {
 
 var io = require('socket.io')(server);
 
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next);
+})
 io.on('connection', function (socket) {
-    console.log('a user connected');
+    if(!socket.request.session.passport || !socket.request.session.passport.user) return;
+    var user = socket.request.session.passport.user.battletag;
+    
+    console.log(user + ' connected');
     socket.on('disconnect', function () {
-        console.log('user disconnected');
+        console.log(user + ' disconnected');
     });
 
     socket.on('chat-message', function (msg) {
-        io.emit('chat-message', msg);
+        io.emit('chat-message', {
+            from: user,
+            message: msg,
+            time: new Date()
+        });
     });
 });
 
