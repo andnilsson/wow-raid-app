@@ -23,7 +23,9 @@ export default class BoardMessageDisplayer extends React.Component<props, {}>{
     render() {
         return <div>
             <div className="board-message-wrapper">
-                <div className="message-header">
+                <div className="message-header" style={{
+                    backgroundColor: getClassColor(this.props.message.from.class).backgroundColor
+                }}>
                     <img src={getImgUrl(this.props.message.from.class)} />
                     <div style={{
                         display: "flex",
@@ -33,7 +35,7 @@ export default class BoardMessageDisplayer extends React.Component<props, {}>{
                         marginLeft: "10px"
                     }}>
                         <h5 style={{
-                            color: getClassColor(this.props.message.from.class)
+                            color: getClassColor(this.props.message.from.class).textColor
                         }}>{this.props.message.from.ownername}</h5>
                         <span>{moment(this.props.message.createdOn).format('YYYY-MM-DD HH:mm')}</span>
                     </div>

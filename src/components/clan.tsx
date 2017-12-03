@@ -133,7 +133,8 @@ class Clan extends React.Component<props, state>{
                                     {properties.map((prop, x) => {
                                         if (prop.property === "class")
                                             return <div style={{
-                                                backgroundColor: getClassColor(player.class),                                                
+                                                backgroundColor: getClassColor(player.class).backgroundColor,                                                
+                                                color: getClassColor(player.class).textColor
                                             }} key={x} className="divTableCell"><img style={{height: "30px"}} src={getImgUrl(player.class)} /> {player.class}</div>
 
                                         if ((prop as any).transformation)

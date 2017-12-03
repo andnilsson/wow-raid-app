@@ -8,7 +8,8 @@ interface props{
 
 interface IPiechartdata {
     name: string,
-    y: number
+    y: number,
+    color: string
 }
 
 class PieChart extends React.Component<props, {}>{
@@ -26,7 +27,7 @@ class PieChart extends React.Component<props, {}>{
             plotOptions: {
                 pie: {                    
                     allowPointSelect: true,
-                    cursor: 'pointer',
+                    cursor: 'pointer',                    
                     dataLabels: {
                         enabled: true,
                         format: '<b>{point.name}</b>: {point.percentage:.1f} %',                        
