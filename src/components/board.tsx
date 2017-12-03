@@ -22,7 +22,7 @@ class Board extends React.Component<props, state>{
         this.props.getOwnPlayer();
         this.props.fetchBoardMessages();
     }
-    createBoardMessage() {
+    createBoardMessage() {        
         this.props.saveBoardMessage({
             text: this.state.newtext
         } as BoardMessage);
@@ -42,7 +42,7 @@ class Board extends React.Component<props, state>{
                         <h5 style={{ marginLeft: "10px" }}>{this.props.currentUser.battletag}</h5>
                     </div>
                     <div className="message-body">
-                        <textarea placeholder={`Vad funderar du på, ${this.props.currentUser.battletag}?`} value={this.state.newtext} onChange={(e) => this.setState({ newtext: e.target.value })}></textarea>
+                        <textarea placeholder={`Skriv något, ${this.props.currentUser.battletag}!`} value={this.state.newtext} onChange={(e) => this.setState({ newtext: e.target.value })}></textarea>
                         <Button variant="raised" color="primary" onClick={() => this.createBoardMessage()}>Skriv</Button>
                     </div>
                 </div>
