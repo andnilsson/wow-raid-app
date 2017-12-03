@@ -11,9 +11,10 @@ class Header extends React.Component<{}, {}>{
                     <h1>
                         <Link to="/">Project classic</Link>
                     </h1>
-                    <Link to="/characters">My character</Link>
-                    <Link to="/members">Members</Link>
+                    <Link to="/characters">Min character</Link>
+                    <Link to="/members">Spelare</Link>
                     <Link to="/rules">FAQ</Link>
+                    <Link to="/board">Board</Link>
                 </div>
 
                 <div className="header-login">

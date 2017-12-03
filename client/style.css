@@ -306,3 +306,45 @@ div.playertable {
     display: table;
 }
 .clearfix:after { clear: both; }
+
+.board-message-wrapper{
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    border: 1px solid #000;    
+    margin: 10px;
+}
+.board-message-wrapper .message-header{
+    display: flex;
+    flex-direction: row;        
+    padding: 10px;    
+    border-bottom: 1px solid #000;
+    background-color: #494848;
+    color: #fff;
+}
+.board-message-wrapper .message-header h5{
+    font-weight: 700;    
+    font-family: franklin-gothic-urw,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #fff
+}
+.board-message-wrapper img {
+    height: 40px;
+}
+.board-message-wrapper .message-body{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;    
+    color: #fff;
+    background-color: #565656;
+}
+
+textarea{
+    border: 0px;
+    height: 80px;
+    color: white;
+    background-color: #565656;
+}
+.board-messages {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+}

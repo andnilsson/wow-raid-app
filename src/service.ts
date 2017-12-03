@@ -1,4 +1,4 @@
-export async function Post(path: string, obj: any): Promise<void> {
+export async function Post<T>(path: string, obj: T): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         var data = JSON.stringify(obj);
 
@@ -24,6 +24,10 @@ export async function Get<T>(path: string): Promise<T> {
 
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
+                if(this.status == 401){
+                    reject();
+                    return;
+                }                    
                 if (this.status == 200)
                     resolve(JSON.parse(this.responseText))
                 else

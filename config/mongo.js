@@ -4,11 +4,37 @@ const config = require('./keys');
 var connectionstring = config.DOCUMENTDB_CONNECTION_STRING;
 
 var repo = {
+    getAllBoardMessages: async function (page) {
+        page = page - 1;
+
+        return new Promise((resolve, reject) => {
+            mongo.connect(connectionstring, function (err, db) {
+                if (err) reject(err);
+                db.collection("boardmessages").find({}).skip(page * 20).limit(20).sort({ 'createdOn': -1 }).toArray(function (err, result) {
+                    if (err) reject(err);
+                    resolve(result);
+                    db.close();
+                });
+            });
+        });
+    },
+    saveBoardMessage: async function (message) {
+        return new Promise((resolve, reject) => {
+            mongo.connect(connectionstring, function (err, db) {
+                if (err) reject(err);
+                db.collection("boardmessages").insertOne(message, function (err, res) {
+                    if (err) reject(err);
+                    resolve();
+                    db.close();
+                });
+            });
+        });
+    },
     saveplayer: async function (player) {
         return new Promise((resolve, reject) => {
             mongo.connect(connectionstring, function (err, db) {
-                if (err) reject(err);                
-                
+                if (err) reject(err);
+
                 if (player._id) {
                     var id = ObjectID(player._id);
                     delete player._id;
