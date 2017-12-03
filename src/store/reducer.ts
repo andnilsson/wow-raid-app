@@ -118,6 +118,7 @@ export const ActionCreators = {
                 dispatch({ type: Actions.FAILED_FETCHING_CURR_PLAYER });
                 return;
             });
+            //one more diff...
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
         }
     },
