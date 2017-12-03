@@ -2,7 +2,7 @@ import * as React from 'react'
 import PieChart from './piechart'
 import { connect } from 'react-redux';
 import { ActionCreators, IApplicationState } from '../store/reducer';
-import { Classes } from '../domain/classes';
+import { Classes, getClassColor } from '../domain/classes';
 var PulseLoader = require('halogenium').PulseLoader;
 import * as en from 'linq';
 
@@ -26,7 +26,8 @@ class Home extends React.Component<props, {}>{
         var data = allClasses.toArray().map((c, index) => {
             return {
                 name: c,
-                y: self.getPercentage(c, en.from(this.props.allPlayers).select(x => x.class))
+                y: self.getPercentage(c, en.from(this.props.allPlayers).select(x => x.class)),
+                color: getClassColor(c).backgroundColor
             }
         })
         return data;
@@ -39,7 +40,8 @@ class Home extends React.Component<props, {}>{
         var data = allfactions.toArray().map((f, i) => {
             return {
                 name: f,
-                y: self.getPercentage(f, en.from(this.props.allPlayers).select(x => x.faction))
+                y: self.getPercentage(f, en.from(this.props.allPlayers).select(x => x.faction)),
+                color: f.toLowerCase() == "horde"? "#322222": "#222233"
             }
         })
         return data;

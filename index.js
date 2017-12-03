@@ -57,6 +57,16 @@ app.get('/api/players', async (req, res) => {
     res.send(players);
 });
 
+app.get('/api/player/:id', async (req, res) => {
+    var player = await repo.getPlayerById(req.params.id);
+    if (!player) {
+        res.status(404);
+        res.send("not found")
+
+    } else
+        res.send(player);
+})
+
 app.get('/api/player', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     var player = await repo.getPlayer(req.user.id);
@@ -70,21 +80,22 @@ app.get('/api/board', requireLogin, async (req, res) => {
     res.send(messages);
 });
 
-app.post('/api/board', requireLogin, async(req, res) => {
+app.post('/api/board', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     if (!req.body) throw "no body"
 
     var message = req.body;
     message.text = sanitize(message.text);
     var player = await repo.getPlayer(req.user.id);
-    if(!player) throw "player not found"
+    if (!player) throw "player not found"
 
     message.from = player;
+    message.charid = player._id;
     message.createdOn = new Date();
 
     await repo.saveBoardMessage(message)
     res.send();
-}); 
+});
 
 app.post('/api/player', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
@@ -101,10 +112,10 @@ app.get('/logout', function (req, res) {
     res.redirect('/');
 });
 
-app.get('/api/onlineusers', requireLogin, async (req, res) => {    
+app.get('/api/onlineusers', requireLogin, async (req, res) => {
     res.send(onlineusers);
 })
-app.get('/api/messages', requireLogin, async (req, res) => {    
+app.get('/api/messages', requireLogin, async (req, res) => {
     res.send(messages.slice(Math.max(messages.length - 50, 1)));
 })
 
@@ -144,7 +155,7 @@ io.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
         console.log(user + ' disconnected');
-        if (onlineusers.indexOf(user) > -1){
+        if (onlineusers.indexOf(user) > -1) {
             onlineusers.splice(onlineusers.indexOf(user));
             io.emit('went-offline', user);
         }

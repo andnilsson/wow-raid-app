@@ -21,7 +21,10 @@ const Actions = {
     FAILED_FETCHING_CURR_USER: "FAILED_FETCHING_CURR_USER",
 
     FINISHED_FETCHING_CURR_PLAYER: "FINISHED_FETCHING_CURR_PLAYER",
-    FAILED_FETCHING_CURR_PLAYER: "FAILED_FETCHING_CURR_PLAYER",
+    FAILED_FETCHING_CURR_PLAYER: "FAILED_FETCHING_CURR_PLAYER",    
+
+    FINISHED_FETCHING_SINGLE_PLAYER: "FINISHED_FETCHING_SINGLE_PLAYER",
+    FAILED_FETCHING_SINGLE_PLAYER: "FAILED_FETCHING_SINGLE_PLAYER",    
 
     STARTED_FETCHING_PLAYERS: "STARTED_FETCHING_PLAYERS",
     FINISHED_FETCHING_ALL_PLAYERS: "FINISHED_FETCHING_ALL_PLAYERS",
@@ -117,8 +120,18 @@ export const ActionCreators = {
             var player = await Get('player').catch(() => {
                 dispatch({ type: Actions.FAILED_FETCHING_CURR_PLAYER });
                 return;
-            });;
+            });            
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
+        }
+    },
+    getAPlayer: (tag: string) => {
+        return async (dispatch: any) => {
+            dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
+            var player = await Get('player/' + tag).catch(() => {
+                dispatch({ type: Actions.FAILED_FETCHING_SINGLE_PLAYER, payload: `Player ${tag} not found` });
+                return;
+            });            
+            dispatch({ type: Actions.FINISHED_FETCHING_SINGLE_PLAYER, payload: player })
         }
     },
     getAllPlayers: () => {
@@ -151,6 +164,7 @@ export interface IAction {
 export interface IApplicationState {
     currentUser: User,
     currentPlayer: Player,
+    selectedPlayer: Player,
     allPlayers: Player[],
     isLoadingUser: boolean,
     isFetchingPlayers: boolean,
@@ -166,6 +180,7 @@ export interface IApplicationState {
 
 const initalState: IApplicationState = {
     currentPlayer: null,
+    selectedPlayer: null,
     allPlayers: [],
     currentUser: null,
     isLoadingUser: false,
@@ -221,6 +236,9 @@ export const reducer: Reducer<IApplicationState> = (state: IApplicationState, ac
         case Actions.FAILED_FETCHING_CURR_PLAYER: return { ...state, isFetchingPlayers: false, error: action.payload }
         case Actions.FINISHED_FETCHING_ALL_PLAYERS: return { ...state, isFetchingPlayers: false, allPlayers: action.payload }
         case Actions.FINISHED_FETCHING_CURR_PLAYER: return { ...state, isFetchingPlayers: false, currentPlayer: action.payload }
+
+        case Actions.FINISHED_FETCHING_SINGLE_PLAYER: return { ...state, isFetchingPlayers: false, selectedPlayer: action.payload }
+        case Actions.FAILED_FETCHING_SINGLE_PLAYER: return { ...state, isFetchingPlayers: false, error: action.payload }
 
         case Actions.STARTED_SAVING_PLAYER: return { ...state, isSavingPlayer: true }
         case Actions.FINISHED_SAVING_PLAYER: return { ...state, isSavingPlayer: false }

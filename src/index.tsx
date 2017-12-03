@@ -16,6 +16,7 @@ var store = createStore(reducer, composeEnhancers(
     applyMiddleware(thunk)
 ))
 
+
 SocketHandler.subscribetoSocket(store.dispatch)
 
 ReactDOM.render(

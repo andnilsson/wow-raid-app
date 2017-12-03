@@ -104,7 +104,7 @@ class Clan extends React.Component<props, state>{
         return (
             <div className="playerlist">
                 <h1>Players registered so far....</h1>
-                
+
                 <div style={{
                     display: "flex",
                 }}>
@@ -131,11 +131,16 @@ class Clan extends React.Component<props, state>{
                             return (
                                 <div key={i} className="divTableRow">
                                     {properties.map((prop, x) => {
-                                        if (prop.property === "class")
-                                            return <div style={{
-                                                backgroundColor: getClassColor(player.class),                                                
-                                            }} key={x} className="divTableCell"><img style={{height: "30px"}} src={getImgUrl(player.class)} /> {player.class}</div>
 
+                                        if (prop.property === "ownername") {
+                                            return <div key={x} className="divTableCell"><a href={`/characters/${player._id}`}>{player.ownername}</a></div>
+                                        }
+                                        else if (prop.property === "class") {
+                                            return <div style={{
+                                                backgroundColor: getClassColor(player.class).backgroundColor,
+                                                color: getClassColor(player.class).textColor
+                                            }} key={x} className="divTableCell"><img style={{ height: "30px" }} src={getImgUrl(player.class)} /> {player.class}</div>
+                                        }
                                         if ((prop as any).transformation)
                                             return <div key={x} className="divTableCell">{(prop as any).transformation((player as any)[prop.property])}</div>
                                         return <div key={x} className="divTableCell">{(player as any)[prop.property]}</div>
