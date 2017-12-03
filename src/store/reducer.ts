@@ -117,7 +117,12 @@ export const ActionCreators = {
             var player = await Get('player').catch(() => {
                 dispatch({ type: Actions.FAILED_FETCHING_CURR_PLAYER });
                 return;
+<<<<<<< HEAD
             });            
+=======
+            });
+            //one more diff...
+>>>>>>> test
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
         }
     },
