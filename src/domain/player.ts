@@ -8,5 +8,10 @@ export class Player {
     ownername: string
     createdOn: Date
     status: string
-    email: string    
+    email: string
+    born: Date
+    emailNotifications: boolean
+    rank: string
+    type: string
+    about: string
 }

@@ -60,4 +60,4 @@ typings/
 \.vscode/launch\.json
 other.txt
 
-client/wowapp\.js
+client/wowapp.js

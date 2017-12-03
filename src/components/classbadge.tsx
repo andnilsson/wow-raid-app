@@ -7,13 +7,16 @@ interface props {
     onClick?: () => void,
     hideBorder?: boolean
 }
-class ClassBadge extends React.Component<props, {}>{   
+class ClassBadge extends React.Component<props, {}>{
 
     render() {
+        var color = getClassColor(this.props.classname)
         return (
-            <div onClick={() => this.props.onClick && this.props.onClick()} className={this.props.hideBorder ? "classBadge-noborder" : "classBadge"}>
+            <div style={{
+                backgroundColor: color.backgroundColor
+            }} onClick={() => this.props.onClick && this.props.onClick()} className={this.props.hideBorder ? "classBadge-noborder" : "classBadge"}>
                 <img src={getImgUrl(this.props.classname)} />
-                <span style={{color: getClassColor(this.props.classname)}}>{this.props.classname}</span>
+                <span style={{ color: color.textColor }}>{this.props.classname}</span>
             </div>
         )
     }
