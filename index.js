@@ -62,6 +62,26 @@ app.get('/api/player', requireLogin, async (req, res) => {
     res.send(player);
 });
 
+app.get('/api/board', requireLogin, async (req, res) => {
+    var messages = await repo.getAllBoardMessages();
+    res.send(messages);
+});
+
+app.post('/api/board', requireLogin, async(req, res) => {
+    if (!req.user) throw "no user found";
+    if (!req.body) throw "no body"
+
+    var message = req.body;
+    var player = await repo.getPlayer(req.user.id);
+    if(!player) throw "player not found"
+
+    message.from = player;
+    message.createdOn = new Date();
+
+    await repo.saveBoardMessage(message)
+    res.send();
+}); 
+
 app.post('/api/player', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     if (!req.body) throw "no body"

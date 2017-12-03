@@ -49,7 +49,7 @@ export const ActionCreators = {
         return (async (dispatch: (action: IAction) => void) => {
             dispatch({ type: Actions.STARTED_FETCHING_BOARD });
 
-            var board = Get<BoardMessage[]>(`board/${page}`).catch((e) => {
+            var board = await Get<BoardMessage[]>(`board?p=${page}`).catch((e) => {
                 dispatch({ type: Actions.FAILED_FETCHING_BOARD, payload: e })
                 return;
             });;
@@ -58,15 +58,18 @@ export const ActionCreators = {
         })
     },
     saveBoardMessage: (m: BoardMessage) => {
-        return (async (dispatch: (action: IAction) => void) => {
+        return (async (dispatch: (action: IAction) => void, getState: () => IApplicationState) => {
             dispatch({ type: Actions.STARTED_SAVING_BOARD_MESSAGE });
 
-            var board = Post<BoardMessage>('board', m).catch((e) => {
+            Post<BoardMessage>('board', m).catch((e) => { //optimistic... ignore await
                 dispatch({ type: Actions.FAILED_SAVING_BOARD_MESSAGE, payload: e })
                 return;
-            });;
+            });
 
-            dispatch({ type: Actions.FINISHED_SAVING_BOARD_MESSAGE });
+            m.createdOn = new Date();
+            m.from = getState().currentPlayer;
+
+            dispatch({ type: Actions.FINISHED_SAVING_BOARD_MESSAGE, payload: m });
         })
     },
     fetchMessages: () => {
@@ -180,6 +183,10 @@ export const reducer: Reducer<IApplicationState> = (state: IApplicationState, ac
         case Actions.STARTED_FETCHING_BOARD: return { ...state, isFetchingBoard: true }
         case Actions.FAILED_FETCHING_BOARD: return { ...state, isFetchingBoard: false, error: action.payload }
         case Actions.FETCHING_MESSAGES: return { ...state, isFetchingMessages: true }
+        case Actions.FINISHED_FETCHING_BOARD: return { ...state, isFetchingBoard: false, boardMessages: action.payload }
+        case Actions.STARTED_SAVING_BOARD_MESSAGE: return { ...state, isSavingBoardMessage: true }
+        case Actions.FINISHED_SAVING_BOARD_MESSAGE: return { ...state, isSavingBoardMessage: false, boardMessages: [action.payload, ...state.boardMessages,] }
+        case Actions.FAILED_SAVING_BOARD_MESSAGE: return { ...state, isSavingBoardMessage: false, error: action.payload }
         case Actions.FETCHED_MESSAGES:
             var newstate = { ...state, isFetchingMessages: false }
             if (action.payload)

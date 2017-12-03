@@ -24,6 +24,10 @@ export async function Get<T>(path: string): Promise<T> {
 
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
+                if(this.status == 401){
+                    reject();
+                    return;
+                }                    
                 if (this.status == 200)
                     resolve(JSON.parse(this.responseText))
                 else
