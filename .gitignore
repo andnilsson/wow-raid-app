@@ -60,8 +60,4 @@ typings/
 \.vscode/launch\.json
 other.txt
 
-<<<<<<< master
 client/wowapp.js
-=======
-client/wowapp\.js
->>>>>>> asdf
