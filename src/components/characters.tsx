@@ -26,8 +26,7 @@ class Characters extends React.Component<props, state>{
                 faction: "Horde",
                 class: "Druid",
                 pvpEnabled: true,
-                email: "",
-                status: "",
+                email: "",                
                 born: new Date(),
                 type: "",
                 about: "",
@@ -46,8 +45,7 @@ class Characters extends React.Component<props, state>{
                     faction: nextProps.currentPlayer.faction,
                     class: nextProps.currentPlayer.class,
                     pvpEnabled: nextProps.currentPlayer.pvpEnabled,
-                    email: nextProps.currentPlayer.email ? nextProps.currentPlayer.email : "",
-                    status: nextProps.currentPlayer.status,
+                    email: nextProps.currentPlayer.email ? nextProps.currentPlayer.email : "",                    
                     born: nextProps.currentPlayer.born,
                     type: nextProps.currentPlayer.type,
                     about: nextProps.currentPlayer.about,
@@ -118,7 +116,7 @@ class Characters extends React.Component<props, state>{
 
                     <Input label="Email" floatingLabel={true} value={this.state.player.email} onChange={(e: any) => this.setState({ player: { ...this.state.player, email: e.target.value } })} />
 
-                    <Select label="Email notiser (du får email när det händer saker här)" defaultValue={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
+                    <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" defaultValue={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>

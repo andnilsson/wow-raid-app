@@ -47,6 +47,9 @@ module.exports = {
     },
     plugins: [        
         new UglifyJSPlugin(),
-        new webpack.optimize.AggressiveMergingPlugin(),        
+        new webpack.optimize.AggressiveMergingPlugin(),       
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production')
+          }), 
     ]
 }

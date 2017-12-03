@@ -70,6 +70,25 @@ var repo = {
             });
         })
     },
+    getPlayerById: async function (playerid) {
+        return new Promise((resolve, reject) => {           
+            mongo.connect(connectionstring, function (err, db) {
+                if (err) reject(err);
+                console.log(playerid);
+                var id = ObjectID(playerid);
+                db.collection("players").find({
+                    _id: id
+                }).toArray(function (err, result) {
+                    if (err) reject(err);
+                    if (result.length > 0)
+                        resolve(result[0]);
+                    else
+                        resolve();
+                    db.close();
+                });
+            });
+        })
+    },
     getAllPlayers: async function () {
         return new Promise((resolve, reject) => {
             mongo.connect(connectionstring, function (err, db) {

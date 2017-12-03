@@ -36,7 +36,7 @@ export default class BoardMessageDisplayer extends React.Component<props, {}>{
                     }}>
                         <h5 style={{
                             color: getClassColor(this.props.message.from.class).textColor
-                        }}>{this.props.message.from.ownername}</h5>
+                        }}>{this.props.message.from._id ? <a href={`/characters/${this.props.message.from._id}`}>{this.props.message.from.ownername}</a> : this.props.message.from.ownername}</h5>
                         <span>{moment(this.props.message.createdOn).format('YYYY-MM-DD HH:mm')}</span>
                     </div>
                 </div>

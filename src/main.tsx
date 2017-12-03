@@ -7,6 +7,7 @@ import Rules from './components/rules'
 import Board from './components/board'
 import { Switch, Route } from 'react-router-dom'
 import Chat from './components/chat'
+import ShowCharacter from './components/showCharacter'
 
 class Main extends React.Component<{}, {}> {
 
@@ -21,7 +22,8 @@ class Main extends React.Component<{}, {}> {
                 <div className="main">
                     <Switch>
                         <Route exact path='/' component={Home} />
-                        <Route path='/characters' component={Characters} />
+                        <Route exact path='/characters' component={Characters} />
+                        <Route path='/characters/:id' component={ShowCharacter} />                        
                         <Route path='/members' component={Clan} />
                         <Route path='/rules' component={Rules} />
                         <Route path='/board' component={Board} />
