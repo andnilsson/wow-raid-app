@@ -12,6 +12,7 @@ const fs = require('fs')
 var util = require('util');
 const config = require('./config/keys');
 require('./config/passport');
+var sanitize = require('mongo-sanitize');
 
 const app = express()
 app.use(favicon(path.join(__dirname, 'client', 'favicon.ico')))
@@ -61,6 +62,29 @@ app.get('/api/player', requireLogin, async (req, res) => {
     var player = await repo.getPlayer(req.user.id);
     res.send(player);
 });
+
+app.get('/api/board', requireLogin, async (req, res) => {
+    var page = req.query.page && req.query.page > 0 ? req.query.page : 1;
+
+    var messages = await repo.getAllBoardMessages(page);
+    res.send(messages);
+});
+
+app.post('/api/board', requireLogin, async(req, res) => {
+    if (!req.user) throw "no user found";
+    if (!req.body) throw "no body"
+
+    var message = req.body;
+    message.text = sanitize(message.text);
+    var player = await repo.getPlayer(req.user.id);
+    if(!player) throw "player not found"
+
+    message.from = player;
+    message.createdOn = new Date();
+
+    await repo.saveBoardMessage(message)
+    res.send();
+}); 
 
 app.post('/api/player', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
