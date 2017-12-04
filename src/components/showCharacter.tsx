@@ -36,8 +36,7 @@ class ShowCharacter extends React.Component<props, {}>{
             <b>Faction:</b> {this.props.selectedPlayer.faction}<br />
             <b>Class:</b> {this.props.selectedPlayer.class}<br />
             <b>Spec:</b> {this.props.selectedPlayer.spec}<br />
-            <b>Pvp Enabled servers:</b> {this.props.selectedPlayer.pvpEnabled ? "Ja" : "Nej"}<br />
-            <b>Rank:</b> {this.props.selectedPlayer.rank}<br />
+            <b>Pvp Enabled servers:</b> {this.props.selectedPlayer.pvpEnabled ? "Ja" : "Nej"}<br />            
             <b>Status:</b> {this.props.selectedPlayer.status}<br />
             <b>Typ:</b> {this.props.selectedPlayer.type}<br />
 

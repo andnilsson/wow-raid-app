@@ -86,6 +86,7 @@ app.post('/api/board', requireLogin, async (req, res) => {
 
     var message = req.body;
     message.text = sanitize(message.text);
+    if(!message.text) throw "empty messages not allowed"
     var player = await repo.getPlayer(req.user.id);
     if (!player) throw "player not found"
 
