@@ -49,7 +49,7 @@ class Board extends React.Component<props, state>{
                 <div className="board-messages">
                     {
                         this.props.boardMessages.map((m, i) => {
-                            return <BoardMessageDisplayer key={i} message={m} />
+                            return <BoardMessageDisplayer key={i} message={m} isAdmin={this.props.currentPlayer.isAdmin} deleteMessage={() => this.props.deleteBoardMessage(m._id)} />
                         })
                     }
                 </div>

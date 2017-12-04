@@ -8,6 +8,7 @@ const path = require('path')
 const passport = require('passport')
 const https = require('https')
 const requireLogin = require('./middlewares/requireLogin');
+const requireAdmin = require('./middlewares/requireAdmin');
 const fs = require('fs')
 var util = require('util');
 const config = require('./config/keys');
@@ -78,6 +79,14 @@ app.get('/api/board', requireLogin, async (req, res) => {
 
     var messages = await repo.getAllBoardMessages(page);
     res.send(messages);
+});
+
+app.delete('/api/board/:id', requireAdmin, async(req, res) => {
+    var id = req.params.id;
+    if(!id || id === "undefined") throw "id not passed";
+    
+    await repo.deleteBoardMessage(id);
+    res.send();
 });
 
 app.post('/api/board', requireLogin, async (req, res) => {

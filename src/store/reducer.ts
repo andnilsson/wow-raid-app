@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import User from "../domain/user";
-import { Post, Get } from "../service";
+import { Post, Get, Delete } from "../service";
 import { Player } from "../domain/player";
 import { ChatActions, SocketHandler } from "../chat/init";
 import { Message } from "../domain/message";
@@ -40,7 +40,8 @@ const Actions = {
 
     STARTED_FETCHING_BOARD: "STARTED_FETCHING_BOARD",
     FINISHED_FETCHING_BOARD: "FINISHED_FETCHING_BOARD",
-    FAILED_FETCHING_BOARD: "FAILED_FETCHING_BOARD",
+    FAILED_FETCHING_BOARD: "FAILED_FETCHING_BOARD",    
+    FINISHED_DELETING_BOARD: 'FINISHED_DELETING_BOARD',
 
     STARTED_SAVING_BOARD_MESSAGE: "STARTED_SAVING_BOARD_MESSAGE",
     FINISHED_SAVING_BOARD_MESSAGE: "FINISHED_SAVING_BOARD_MESSAGE",
@@ -48,6 +49,15 @@ const Actions = {
 }
 
 export const ActionCreators = {
+    deleteBoardMessage: (id: string) => {
+        return (async (dispatch: any) => {
+            dispatch({ type: Actions.STARTED_FETCHING_BOARD });
+
+            await Delete(`board/${id}`)
+
+            dispatch(ActionCreators.fetchBoardMessages());
+        })
+    },
     fetchBoardMessages: (page: number = 0) => {
         return (async (dispatch: (action: IAction) => void) => {
             dispatch({ type: Actions.STARTED_FETCHING_BOARD });
