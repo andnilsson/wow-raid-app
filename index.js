@@ -129,8 +129,8 @@ app.post('/api/player', requireLogin, async (req, res) => {
     if (!req.user.isAdmin) {
         req.body.isAdmin = false;
         req.body.ownerid = req.user.id;
-        req.body.ownername = req.user.battletag;
-    }
+        req.body.ownername = req.user.battletag;        
+    }    
 
     await repo.saveplayer(req.body);
     res.send();

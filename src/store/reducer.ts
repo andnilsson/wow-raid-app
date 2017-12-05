@@ -218,7 +218,7 @@ const initalState: IApplicationState = {
     isFetchingBoard: false
 }
 
-export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
+export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {    
 
     switch (action.type) {
         case Actions.STARTED_DELETING_PLAYER: return { ...state, isDeleting: true}
