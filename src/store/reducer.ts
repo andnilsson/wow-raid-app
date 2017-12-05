@@ -30,6 +30,9 @@ const Actions = {
     FINISHED_FETCHING_ALL_PLAYERS: "FINISHED_FETCHING_ALL_PLAYERS",
     FAILED_FETCHING_ALL_PLAYERS: "FAILED_FETCHING_ALL_PLAYERS",
 
+    STARTED_DELETING_PLAYER: "STARTED_DELETING_PLAYER",
+    FINISHED_DELETING_PLAYER: "FINISHED_DELETING_PLAYER",    
+
     STARTED_SAVING_PLAYERS: "STARTED_SAVING_PLAYERS",
     FINISHED_SAVING_PLAYERS: "FINISHED_SAVING_PLAYERS",
     FAILED_SAVING_PLAYERS: "FAILED_SAVING_PLAYERS",
@@ -56,6 +59,16 @@ export const ActionCreators = {
             await Delete(`board/${id}`)
 
             dispatch(ActionCreators.fetchBoardMessages());
+        })
+    },
+    deletePlayer: (id: string) => {
+        return (async (dispatch: any) => {
+            dispatch({ type: Actions.STARTED_DELETING_PLAYER });
+
+            await Delete(`player/${id}`)
+
+            dispatch(ActionCreators.getAllPlayers());
+            dispatch({type: Actions.FINISHED_DELETING_PLAYER})
         })
     },
     fetchBoardMessages: (page: number = 0) => {
@@ -172,6 +185,7 @@ export interface IAction {
 }
 
 export interface IApplicationState {
+    isDeleting: boolean,
     currentUser: User,
     currentPlayer: Player,    
     allPlayers: Player[],
@@ -188,6 +202,7 @@ export interface IApplicationState {
 }
 
 const initalState: IApplicationState = {
+    isDeleting: false,
     currentPlayer: null,    
     allPlayers: [],
     currentUser: null,
@@ -206,6 +221,8 @@ const initalState: IApplicationState = {
 export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
 
     switch (action.type) {
+        case Actions.STARTED_DELETING_PLAYER: return { ...state, isDeleting: true}
+        case Actions.FINISHED_DELETING_PLAYER: return { ...state, isDeleting: false}
         case Actions.STARTED_FETCHING_BOARD: return { ...state, isFetchingBoard: true }
         case Actions.FAILED_FETCHING_BOARD: return { ...state, isFetchingBoard: false, error: action.payload }
         case Actions.FETCHING_MESSAGES: return { ...state, isFetchingMessages: true }

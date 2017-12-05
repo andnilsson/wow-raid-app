@@ -28,11 +28,10 @@ export default class EditCharacter extends React.Component<props, state>{
         super(props);
         this.state = {
             player: {
-                ownername: "A new character",
-                spec: "DPS",
-                faction: "Horde",
-                class: "Druid",
-                pvpEnabled: true,
+                spec: "",
+                faction: "",
+                class: "",
+                pvpEnabled: null,
                 email: "",
                 born: new Date(),
                 type: "",
@@ -43,23 +42,22 @@ export default class EditCharacter extends React.Component<props, state>{
         }
     }
 
-    componentWillReceiveProps(nextProps: props) {
-        if (nextProps.currentPlayer) {
-            this.setState({ 
-                player: {
-                    ...this.state.player,
-                    spec: nextProps.currentPlayer.spec,
-                    faction: nextProps.currentPlayer.faction,
-                    class: nextProps.currentPlayer.class,
-                    pvpEnabled: nextProps.currentPlayer.pvpEnabled,
-                    email: nextProps.currentPlayer.email ? nextProps.currentPlayer.email : "",
-                    born: nextProps.currentPlayer.born,
-                    type: nextProps.currentPlayer.type,
-                    about: nextProps.currentPlayer.about,
-                    _id: nextProps.currentPlayer._id
-                }
-            })
-        }
+    componentDidMount() {
+        this.setState({
+            player: {           
+                ...this.state.player,  
+                spec: this.props.currentPlayer.spec,
+                faction: this.props.currentPlayer.faction,
+                class: this.props.currentPlayer.class,
+                pvpEnabled: this.props.currentPlayer.pvpEnabled,
+                email: this.props.currentPlayer.email ? this.props.currentPlayer.email : "",
+                born: this.props.currentPlayer.born,
+                type: this.props.currentPlayer.type,
+                about: this.props.currentPlayer.about,
+                _id: this.props.currentPlayer._id
+            }
+        })
+
     }
 
     classWasSelected(classname: string) {
@@ -108,12 +106,14 @@ export default class EditCharacter extends React.Component<props, state>{
                     <ClassBadge classname={this.state.player.class} onClick={() => this.setState({ classSelectorVisible: true })} />
 
                     <Select label="Spec" defaultValue={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
+                        <Option value="" label="---" />
                         <Option value="DPS" label="DPS" />
                         <Option value="Healer" label="Healer" />
                         <Option value="Tank" label="Tank" />
                     </Select>
 
                     <Select label="PVP Enabled server" defaultValue={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
+                        <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>
@@ -121,11 +121,13 @@ export default class EditCharacter extends React.Component<props, state>{
                     <Input label="Email" floatingLabel={true} value={this.state.player.email} onChange={(e: any) => this.setState({ player: { ...this.state.player, email: e.target.value } })} />
 
                     <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" defaultValue={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
+                        <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>
 
                     <Select label="Typ av spelare" defaultValue={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
+                        <Option value="" label="---" />
                         <Option value="Raid Leader" label="Raid Leader" />
                         <Option value="Class leader" label="Class leader" />
                         <Option value="Raid member" label="Raid member" />

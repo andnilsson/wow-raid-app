@@ -59,7 +59,7 @@ app.get('/api/players', async (req, res) => {
 });
 
 app.get('/api/player/:id', async (req, res) => {
-    if(!req.params.id || req.params.id === "undefined"){
+    if (!req.params.id || req.params.id === "undefined") {
         res.status(400)
         res.send("No id given...")
         return;
@@ -94,6 +94,15 @@ app.delete('/api/board/:id', requireAdmin, async (req, res) => {
     await repo.deleteBoardMessage(id);
     res.send();
 });
+
+app.delete('/api/player/:id', requireAdmin, async (req, res) => {
+    var id = req.params.id;
+    if (!id || id === "undefined") throw "id not passed";
+
+    await repo.deletePlayer(id);
+    res.send();
+});
+
 
 app.post('/api/board', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";

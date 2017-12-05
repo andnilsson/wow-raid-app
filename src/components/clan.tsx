@@ -119,6 +119,7 @@ class Clan extends React.Component<props, state>{
 
                     <Input label="Contains text" floatingLabel={true} value={this.state.filterValue} onChange={(e: any) => this.filterTable(e.target.value)} />
                     <Button variant="raised" color="primary" onClick={() => this.resetSortAndFilter()}>Reset all filters</Button>
+                    <Button variant="raised" color="secondary" onClick={() => this.props.getAllPlayers()}>Ladda om alla spelare</Button>
                 </div>
 
                 <div className="divTable playertable">
