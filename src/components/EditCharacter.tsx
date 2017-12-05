@@ -1,32 +1,38 @@
 import * as React from 'react'
 import { IApplicationState, ActionCreators } from '../store/reducer';
-import { Player as domainPlayer } from '../domain/player';
-import { connect } from 'react-redux';
+import { Player as domainPlayer, Player } from '../domain/player';
 var Option = require('muicss/lib/react/option')
 var Select = require('muicss/lib/react/select')
 var Button = require('muicss/react').Button
 var Input = require('muicss/lib/react/input')
-type props = IApplicationState & typeof ActionCreators
+
 import ClassSelector from './classSelector'
 import ClassBadge from './classbadge'
 var PulseLoader = require('halogenium').PulseLoader;
 import ImgButton from './imgbutton'
+
+interface props {
+    currentPlayer: Player
+    currentUser: any
+    isSavingPlayer: boolean
+    savePlayer: (player: Player) => void
+}
 
 interface state {
     player: domainPlayer,
     classSelectorVisible: boolean
 }
 
-class Characters extends React.Component<props, state>{
+export default class EditCharacter extends React.Component<props, state>{
     constructor(props: props) {
         super(props);
         this.state = {
             player: {
-                spec: "DPS",
-                faction: "Horde",
-                class: "Druid",
-                pvpEnabled: true,
-                email: "",                
+                spec: "",
+                faction: "",
+                class: "",
+                pvpEnabled: null,
+                email: "",
                 born: new Date(),
                 type: "",
                 about: "",
@@ -36,23 +42,22 @@ class Characters extends React.Component<props, state>{
         }
     }
 
-    componentWillReceiveProps(nextProps: props) {
-        if (nextProps.currentPlayer) {
-            this.setState({
-                player: {
-                    ...this.state.player,
-                    spec: nextProps.currentPlayer.spec,
-                    faction: nextProps.currentPlayer.faction,
-                    class: nextProps.currentPlayer.class,
-                    pvpEnabled: nextProps.currentPlayer.pvpEnabled,
-                    email: nextProps.currentPlayer.email ? nextProps.currentPlayer.email : "",                    
-                    born: nextProps.currentPlayer.born,
-                    type: nextProps.currentPlayer.type,
-                    about: nextProps.currentPlayer.about,
-                    _id: nextProps.currentPlayer._id
-                }
-            })
-        }
+    componentDidMount() {
+        this.setState({
+            player: {           
+                ...this.state.player,  
+                spec: this.props.currentPlayer.spec,
+                faction: this.props.currentPlayer.faction,
+                class: this.props.currentPlayer.class,
+                pvpEnabled: this.props.currentPlayer.pvpEnabled,
+                email: this.props.currentPlayer.email ? this.props.currentPlayer.email : "",
+                born: this.props.currentPlayer.born,
+                type: this.props.currentPlayer.type,
+                about: this.props.currentPlayer.about,
+                _id: this.props.currentPlayer._id
+            }
+        })
+
     }
 
     classWasSelected(classname: string) {
@@ -65,18 +70,15 @@ class Characters extends React.Component<props, state>{
         })
     }
 
-    componentDidMount() {
-        this.props.getOwnPlayer();
-    }
-
     render() {
         if (!this.props.currentUser) return "Please log in join the clan!";
-        if (this.props.isFetchingPlayers) return <PulseLoader color="#26A65B" size="16px" margin="4px" />
+
         return (
             <div style={{
                 display: "flex"
             }}>
                 <div style={{ width: "400px", }}>
+                    {this.props.currentPlayer && <h1>{this.props.currentPlayer.ownername}</h1>}
                     <label>Faction:</label> {this.state.player.faction}
                     <div style={{
                         display: "flex",
@@ -104,12 +106,14 @@ class Characters extends React.Component<props, state>{
                     <ClassBadge classname={this.state.player.class} onClick={() => this.setState({ classSelectorVisible: true })} />
 
                     <Select label="Spec" defaultValue={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
+                        <Option value="" label="---" />
                         <Option value="DPS" label="DPS" />
                         <Option value="Healer" label="Healer" />
                         <Option value="Tank" label="Tank" />
                     </Select>
 
                     <Select label="PVP Enabled server" defaultValue={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
+                        <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>
@@ -117,11 +121,13 @@ class Characters extends React.Component<props, state>{
                     <Input label="Email" floatingLabel={true} value={this.state.player.email} onChange={(e: any) => this.setState({ player: { ...this.state.player, email: e.target.value } })} />
 
                     <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" defaultValue={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
+                        <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>
 
                     <Select label="Typ av spelare" defaultValue={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
+                        <Option value="" label="---" />
                         <Option value="Raid Leader" label="Raid Leader" />
                         <Option value="Class leader" label="Class leader" />
                         <Option value="Raid member" label="Raid member" />
@@ -145,8 +151,3 @@ class Characters extends React.Component<props, state>{
         )
     }
 }
-
-export default connect(
-    (state: IApplicationState) => state,
-    ActionCreators
-)(Characters)

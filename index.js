@@ -8,6 +8,7 @@ const path = require('path')
 const passport = require('passport')
 const https = require('https')
 const requireLogin = require('./middlewares/requireLogin');
+const requireAdmin = require('./middlewares/requireAdmin');
 const fs = require('fs')
 var util = require('util');
 const config = require('./config/keys');
@@ -58,6 +59,12 @@ app.get('/api/players', async (req, res) => {
 });
 
 app.get('/api/player/:id', async (req, res) => {
+    if (!req.params.id || req.params.id === "undefined") {
+        res.status(400)
+        res.send("No id given...")
+        return;
+    }
+
     var player = await repo.getPlayerById(req.params.id);
     if (!player) {
         res.status(404);
@@ -67,7 +74,7 @@ app.get('/api/player/:id', async (req, res) => {
         res.send(player);
 })
 
-app.get('/api/player', requireLogin, async (req, res) => {
+app.get('/api/ownplayer', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     var player = await repo.getPlayer(req.user.id);
     res.send(player);
@@ -80,12 +87,30 @@ app.get('/api/board', requireLogin, async (req, res) => {
     res.send(messages);
 });
 
+app.delete('/api/board/:id', requireAdmin, async (req, res) => {
+    var id = req.params.id;
+    if (!id || id === "undefined") throw "id not passed";
+
+    await repo.deleteBoardMessage(id);
+    res.send();
+});
+
+app.delete('/api/player/:id', requireAdmin, async (req, res) => {
+    var id = req.params.id;
+    if (!id || id === "undefined") throw "id not passed";
+
+    await repo.deletePlayer(id);
+    res.send();
+});
+
+
 app.post('/api/board', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     if (!req.body) throw "no body"
 
     var message = req.body;
     message.text = sanitize(message.text);
+    if (!message.text) throw "empty messages not allowed"
     var player = await repo.getPlayer(req.user.id);
     if (!player) throw "player not found"
 
@@ -101,8 +126,12 @@ app.post('/api/player', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     if (!req.body) throw "no body"
 
-    req.body.ownerid = req.user.id;
-    req.body.ownername = req.user.battletag;
+    if (!req.user.isAdmin) {
+        req.body.isAdmin = false;
+        req.body.ownerid = req.user.id;
+        req.body.ownername = req.user.battletag;
+    }
+
     await repo.saveplayer(req.body);
     res.send();
 });

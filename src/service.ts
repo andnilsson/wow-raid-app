@@ -18,6 +18,28 @@ export async function Post<T>(path: string, obj: T): Promise<void> {
     })
 }
 
+export async function Delete(path: string): Promise<void>{
+    return new Promise<void>((resolve,reject) => {
+        var xhr = new XMLHttpRequest();
+        
+                xhr.addEventListener("readystatechange", function () {
+                    if (this.readyState === 4) {
+                        if(this.status == 401 || this.status == 404){
+                            reject();
+                            return;
+                        }                    
+                        
+                        resolve();
+                    }
+                });
+        
+                xhr.open("DELETE", `/api/${path}`);
+                xhr.setRequestHeader("accept", "application/json");
+        
+                xhr.send();
+    });
+}
+
 export async function Get<T>(path: string): Promise<T> {
     return new Promise<T>((resolve, reject) => {
         var xhr = new XMLHttpRequest();

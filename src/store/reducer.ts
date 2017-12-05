@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import User from "../domain/user";
-import { Post, Get } from "../service";
+import { Post, Get, Delete } from "../service";
 import { Player } from "../domain/player";
 import { ChatActions, SocketHandler } from "../chat/init";
 import { Message } from "../domain/message";
@@ -30,6 +30,9 @@ const Actions = {
     FINISHED_FETCHING_ALL_PLAYERS: "FINISHED_FETCHING_ALL_PLAYERS",
     FAILED_FETCHING_ALL_PLAYERS: "FAILED_FETCHING_ALL_PLAYERS",
 
+    STARTED_DELETING_PLAYER: "STARTED_DELETING_PLAYER",
+    FINISHED_DELETING_PLAYER: "FINISHED_DELETING_PLAYER",    
+
     STARTED_SAVING_PLAYERS: "STARTED_SAVING_PLAYERS",
     FINISHED_SAVING_PLAYERS: "FINISHED_SAVING_PLAYERS",
     FAILED_SAVING_PLAYERS: "FAILED_SAVING_PLAYERS",
@@ -40,7 +43,8 @@ const Actions = {
 
     STARTED_FETCHING_BOARD: "STARTED_FETCHING_BOARD",
     FINISHED_FETCHING_BOARD: "FINISHED_FETCHING_BOARD",
-    FAILED_FETCHING_BOARD: "FAILED_FETCHING_BOARD",
+    FAILED_FETCHING_BOARD: "FAILED_FETCHING_BOARD",    
+    FINISHED_DELETING_BOARD: 'FINISHED_DELETING_BOARD',
 
     STARTED_SAVING_BOARD_MESSAGE: "STARTED_SAVING_BOARD_MESSAGE",
     FINISHED_SAVING_BOARD_MESSAGE: "FINISHED_SAVING_BOARD_MESSAGE",
@@ -48,6 +52,25 @@ const Actions = {
 }
 
 export const ActionCreators = {
+    deleteBoardMessage: (id: string) => {
+        return (async (dispatch: any) => {
+            dispatch({ type: Actions.STARTED_FETCHING_BOARD });
+
+            await Delete(`board/${id}`)
+
+            dispatch(ActionCreators.fetchBoardMessages());
+        })
+    },
+    deletePlayer: (id: string) => {
+        return (async (dispatch: any) => {
+            dispatch({ type: Actions.STARTED_DELETING_PLAYER });
+
+            await Delete(`player/${id}`)
+
+            dispatch(ActionCreators.getAllPlayers());
+            dispatch({type: Actions.FINISHED_DELETING_PLAYER})
+        })
+    },
     fetchBoardMessages: (page: number = 0) => {
         return (async (dispatch: (action: IAction) => void) => {
             dispatch({ type: Actions.STARTED_FETCHING_BOARD });
@@ -117,18 +140,18 @@ export const ActionCreators = {
     getOwnPlayer: () => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
-            var player = await Get('player').catch(() => {
+            var player = await Get('ownplayer').catch(() => {
                 dispatch({ type: Actions.FAILED_FETCHING_CURR_PLAYER });
                 return;
             });            
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
         }
     },
-    getAPlayer: (tag: string) => {
+    getAPlayer: (id: string) => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
-            var player = await Get('player/' + tag).catch(() => {
-                dispatch({ type: Actions.FAILED_FETCHING_SINGLE_PLAYER, payload: `Player ${tag} not found` });
+            var player = await Get('player/' + id).catch(() => {
+                dispatch({ type: Actions.FAILED_FETCHING_SINGLE_PLAYER, payload: `Player ${id} not found` });
                 return;
             });            
             dispatch({ type: Actions.FINISHED_FETCHING_SINGLE_PLAYER, payload: player })
@@ -162,9 +185,9 @@ export interface IAction {
 }
 
 export interface IApplicationState {
+    isDeleting: boolean,
     currentUser: User,
-    currentPlayer: Player,
-    selectedPlayer: Player,
+    currentPlayer: Player,    
     allPlayers: Player[],
     isLoadingUser: boolean,
     isFetchingPlayers: boolean,
@@ -179,8 +202,8 @@ export interface IApplicationState {
 }
 
 const initalState: IApplicationState = {
-    currentPlayer: null,
-    selectedPlayer: null,
+    isDeleting: false,
+    currentPlayer: null,    
     allPlayers: [],
     currentUser: null,
     isLoadingUser: false,
@@ -198,6 +221,8 @@ const initalState: IApplicationState = {
 export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
 
     switch (action.type) {
+        case Actions.STARTED_DELETING_PLAYER: return { ...state, isDeleting: true}
+        case Actions.FINISHED_DELETING_PLAYER: return { ...state, isDeleting: false}
         case Actions.STARTED_FETCHING_BOARD: return { ...state, isFetchingBoard: true }
         case Actions.FAILED_FETCHING_BOARD: return { ...state, isFetchingBoard: false, error: action.payload }
         case Actions.FETCHING_MESSAGES: return { ...state, isFetchingMessages: true }

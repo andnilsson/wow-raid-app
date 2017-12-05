@@ -18,6 +18,30 @@ var repo = {
             });
         });
     },
+    deletePlayer: async function(id) {
+        return new Promise((resolve,reject) => {
+            mongo.connect(connectionstring, function (err, db) {
+                if (err) reject(err);                
+                db.collection("players").deleteOne({ _id: ObjectID(id) }, function (err, res) {
+                    if (err) reject(err);
+                    resolve();
+                    db.close();
+                });
+            }); 
+        });
+    },
+    deleteBoardMessage: async function(id) {
+        return new Promise((resolve,reject) => {
+            mongo.connect(connectionstring, function (err, db) {
+                if (err) reject(err);                
+                db.collection("boardmessages").deleteOne({ _id: ObjectID(id) }, function (err, res) {
+                    if (err) reject(err);
+                    resolve();
+                    db.close();
+                });
+            }); 
+        });
+    },
     saveBoardMessage: async function (message) {
         return new Promise((resolve, reject) => {
             mongo.connect(connectionstring, function (err, db) {
@@ -69,12 +93,16 @@ var repo = {
                 });
             });
         })
-    },
+    },    
     getPlayerById: async function (playerid) {
         return new Promise((resolve, reject) => {           
             mongo.connect(connectionstring, function (err, db) {
                 if (err) reject(err);
                 console.log(playerid);
+                if(!playerid || playerid === "undefined"){
+                    reject();
+                    return;
+                }
                 var id = ObjectID(playerid);
                 db.collection("players").find({
                     _id: id

@@ -5,7 +5,9 @@ import * as moment from 'moment'
 import anchorme from "anchorme"
 
 interface props {
-    message: BoardMessage
+    message: BoardMessage,
+    isAdmin: boolean
+    deleteMessage: () => void
 }
 
 export default class BoardMessageDisplayer extends React.Component<props, {}>{
@@ -18,6 +20,11 @@ export default class BoardMessageDisplayer extends React.Component<props, {}>{
             ]
         });
         return str;
+    }
+
+    confirmDelete() {
+        if (!confirm(`Är du säker på att du vill ta bort inlägget från ${this.props.message.from.ownername}?`)) return;
+        this.props.deleteMessage()
     }
 
     render() {
@@ -37,6 +44,7 @@ export default class BoardMessageDisplayer extends React.Component<props, {}>{
                         <h5 style={{
                             color: getClassColor(this.props.message.from.class).textColor
                         }}>{this.props.message.from._id ? <a href={`/characters/${this.props.message.from._id}`}>{this.props.message.from.ownername}</a> : this.props.message.from.ownername}</h5>
+                        {this.props.isAdmin && <button onClick={() => this.confirmDelete()}>delete</button>}
                         <span>{moment(this.props.message.createdOn).format('YYYY-MM-DD HH:mm')}</span>
                     </div>
                 </div>

@@ -5,4 +5,5 @@ export class BoardMessage {
     createdOn: Date
     text: string
     tags: Player[]
+    _id: string
 }

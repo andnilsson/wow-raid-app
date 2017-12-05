@@ -71,6 +71,11 @@ export function getImgUrl(classname: string): string {
 
 export function getClassColor(classname: string): classColor {
     var c = en.from(Classes).firstOrDefault(x => x.name == classname);
+    if(!c)
+        return {
+            backgroundColor: "#fff",
+            textColor: "ccc"
+        }
     return {
         backgroundColor: c.color,
         textColor: c.textColor
