@@ -9,7 +9,7 @@ import { Player } from '../domain/player';
 
 type props = IApplicationState & typeof ActionCreators
 interface state {
-    selectedPlayer: Player;
+    selectedPlayer: Player
 }
 class DisplayEditCharacter extends React.Component<props, state>{
     constructor(props: props) {
@@ -35,7 +35,7 @@ class DisplayEditCharacter extends React.Component<props, state>{
             var player = this.props.currentPlayer || en.from(this.props.allPlayers).where(x => x.ownerid == this.props.currentUser.id).firstOrDefault();
             if(!player){
                 if(!this.props.isFetchingPlayers)
-                    this.props.getAllPlayers()
+                    this.props.getOwnPlayer()
                 return;
             }
 

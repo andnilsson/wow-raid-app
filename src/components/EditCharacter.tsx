@@ -105,14 +105,14 @@ export default class EditCharacter extends React.Component<props, state>{
                     Class:<br />
                     <ClassBadge classname={this.state.player.class} onClick={() => this.setState({ classSelectorVisible: true })} />
 
-                    <Select label="Spec" defaultValue={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
+                    <Select label="Spec" value={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
                         <Option value="" label="---" />
                         <Option value="DPS" label="DPS" />
                         <Option value="Healer" label="Healer" />
                         <Option value="Tank" label="Tank" />
                     </Select>
 
-                    <Select label="PVP Enabled server" defaultValue={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
+                    <Select label="PVP Enabled server" value={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
                         <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
@@ -120,13 +120,13 @@ export default class EditCharacter extends React.Component<props, state>{
 
                     <Input label="Email" floatingLabel={true} value={this.state.player.email} onChange={(e: any) => this.setState({ player: { ...this.state.player, email: e.target.value } })} />
 
-                    <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" defaultValue={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
+                    <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" value={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
                         <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>
 
-                    <Select label="Typ av spelare" defaultValue={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
+                    <Select label="Typ av spelare" value={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
                         <Option value="" label="---" />
                         <Option value="Raid Leader" label="Raid Leader" />
                         <Option value="Class leader" label="Class leader" />

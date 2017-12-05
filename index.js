@@ -77,6 +77,11 @@ app.get('/api/player/:id', async (req, res) => {
 app.get('/api/ownplayer', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     var player = await repo.getPlayer(req.user.id);
+    if (!player) {
+        res.send();
+        return;
+    }
+
     res.send(player);
 });
 

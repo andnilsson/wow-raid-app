@@ -21,17 +21,17 @@ const Actions = {
     FAILED_FETCHING_CURR_USER: "FAILED_FETCHING_CURR_USER",
 
     FINISHED_FETCHING_CURR_PLAYER: "FINISHED_FETCHING_CURR_PLAYER",
-    FAILED_FETCHING_CURR_PLAYER: "FAILED_FETCHING_CURR_PLAYER",    
+    FAILED_FETCHING_CURR_PLAYER: "FAILED_FETCHING_CURR_PLAYER",
 
     FINISHED_FETCHING_SINGLE_PLAYER: "FINISHED_FETCHING_SINGLE_PLAYER",
-    FAILED_FETCHING_SINGLE_PLAYER: "FAILED_FETCHING_SINGLE_PLAYER",    
+    FAILED_FETCHING_SINGLE_PLAYER: "FAILED_FETCHING_SINGLE_PLAYER",
 
     STARTED_FETCHING_PLAYERS: "STARTED_FETCHING_PLAYERS",
     FINISHED_FETCHING_ALL_PLAYERS: "FINISHED_FETCHING_ALL_PLAYERS",
     FAILED_FETCHING_ALL_PLAYERS: "FAILED_FETCHING_ALL_PLAYERS",
 
     STARTED_DELETING_PLAYER: "STARTED_DELETING_PLAYER",
-    FINISHED_DELETING_PLAYER: "FINISHED_DELETING_PLAYER",    
+    FINISHED_DELETING_PLAYER: "FINISHED_DELETING_PLAYER",
 
     STARTED_SAVING_PLAYERS: "STARTED_SAVING_PLAYERS",
     FINISHED_SAVING_PLAYERS: "FINISHED_SAVING_PLAYERS",
@@ -43,7 +43,7 @@ const Actions = {
 
     STARTED_FETCHING_BOARD: "STARTED_FETCHING_BOARD",
     FINISHED_FETCHING_BOARD: "FINISHED_FETCHING_BOARD",
-    FAILED_FETCHING_BOARD: "FAILED_FETCHING_BOARD",    
+    FAILED_FETCHING_BOARD: "FAILED_FETCHING_BOARD",
     FINISHED_DELETING_BOARD: 'FINISHED_DELETING_BOARD',
 
     STARTED_SAVING_BOARD_MESSAGE: "STARTED_SAVING_BOARD_MESSAGE",
@@ -68,7 +68,7 @@ export const ActionCreators = {
             await Delete(`player/${id}`)
 
             dispatch(ActionCreators.getAllPlayers());
-            dispatch({type: Actions.FINISHED_DELETING_PLAYER})
+            dispatch({ type: Actions.FINISHED_DELETING_PLAYER })
         })
     },
     fetchBoardMessages: (page: number = 0) => {
@@ -133,18 +133,23 @@ export const ActionCreators = {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_SAVING_PLAYER })
             var id = await Post('player', player);
-            dispatch({ type: Actions.FINISHED_SAVING_PLAYER, payload: id })
-            dispatch(ActionCreators.getOwnPlayer());
+            
+            dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
+            dispatch({ type: Actions.FINISHED_SAVING_PLAYER, payload: id })            
         }
     },
     getOwnPlayer: () => {
-        return async (dispatch: any) => {
+        return async (dispatch: any, getState: () => IApplicationState) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
             var player = await Get('ownplayer').catch(() => {
                 dispatch({ type: Actions.FAILED_FETCHING_CURR_PLAYER });
                 return;
-            });            
-            dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
+            });
+            dispatch({
+                type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player || {
+                    ownerid: getState().currentUser.id
+                } as Player
+            })
         }
     },
     getAPlayer: (id: string) => {
@@ -153,7 +158,7 @@ export const ActionCreators = {
             var player = await Get('player/' + id).catch(() => {
                 dispatch({ type: Actions.FAILED_FETCHING_SINGLE_PLAYER, payload: `Player ${id} not found` });
                 return;
-            });            
+            });
             dispatch({ type: Actions.FINISHED_FETCHING_SINGLE_PLAYER, payload: player })
         }
     },
@@ -187,7 +192,7 @@ export interface IAction {
 export interface IApplicationState {
     isDeleting: boolean,
     currentUser: User,
-    currentPlayer: Player,    
+    currentPlayer: Player,
     allPlayers: Player[],
     isLoadingUser: boolean,
     isFetchingPlayers: boolean,
@@ -203,7 +208,7 @@ export interface IApplicationState {
 
 const initalState: IApplicationState = {
     isDeleting: false,
-    currentPlayer: null,    
+    currentPlayer: null,
     allPlayers: [],
     currentUser: null,
     isLoadingUser: false,
@@ -221,8 +226,8 @@ const initalState: IApplicationState = {
 export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
 
     switch (action.type) {
-        case Actions.STARTED_DELETING_PLAYER: return { ...state, isDeleting: true}
-        case Actions.FINISHED_DELETING_PLAYER: return { ...state, isDeleting: false}
+        case Actions.STARTED_DELETING_PLAYER: return { ...state, isDeleting: true }
+        case Actions.FINISHED_DELETING_PLAYER: return { ...state, isDeleting: false }
         case Actions.STARTED_FETCHING_BOARD: return { ...state, isFetchingBoard: true }
         case Actions.FAILED_FETCHING_BOARD: return { ...state, isFetchingBoard: false, error: action.payload }
         case Actions.FETCHING_MESSAGES: return { ...state, isFetchingMessages: true }

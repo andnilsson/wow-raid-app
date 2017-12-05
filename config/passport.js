@@ -12,7 +12,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async(obj, done) => {
     var player = await mongo.getPlayer(obj.id);
-    if(player.isAdmin)
+    if(player && player.isAdmin)
         obj.isAdmin = true;
     done(null, obj);
     // User.findById(id)

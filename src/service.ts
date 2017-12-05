@@ -18,25 +18,25 @@ export async function Post<T>(path: string, obj: T): Promise<void> {
     })
 }
 
-export async function Delete(path: string): Promise<void>{
-    return new Promise<void>((resolve,reject) => {
+export async function Delete(path: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
         var xhr = new XMLHttpRequest();
-        
-                xhr.addEventListener("readystatechange", function () {
-                    if (this.readyState === 4) {
-                        if(this.status == 401 || this.status == 404){
-                            reject();
-                            return;
-                        }                    
-                        
-                        resolve();
-                    }
-                });
-        
-                xhr.open("DELETE", `/api/${path}`);
-                xhr.setRequestHeader("accept", "application/json");
-        
-                xhr.send();
+
+        xhr.addEventListener("readystatechange", function () {
+            if (this.readyState === 4) {
+                if (this.status == 401 || this.status == 404) {
+                    reject();
+                    return;
+                }
+
+                resolve();
+            }
+        });
+
+        xhr.open("DELETE", `/api/${path}`);
+        xhr.setRequestHeader("accept", "application/json");
+
+        xhr.send();
     });
 }
 
@@ -46,12 +46,19 @@ export async function Get<T>(path: string): Promise<T> {
 
         xhr.addEventListener("readystatechange", function () {
             if (this.readyState === 4) {
-                if(this.status == 401){
+                if (this.status == 401) {
                     reject();
                     return;
-                }                    
-                if (this.status == 200)
+                }
+                if (this.status == 200) {
+                    try{
                     resolve(JSON.parse(this.responseText))
+                    } catch(e){
+                        console.log(e);
+                        console.log(path);
+                        reject(e);
+                    }
+                }
                 else
                     reject();
             }
