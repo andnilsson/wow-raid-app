@@ -2,7 +2,7 @@ import { Provider } from "react-redux";
 
 export default interface User {
     battletag: string,
-    is: number,
+    id: string,
     provider: string,
     token: string
 }

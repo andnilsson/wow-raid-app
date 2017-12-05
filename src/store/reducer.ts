@@ -127,18 +127,18 @@ export const ActionCreators = {
     getOwnPlayer: () => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
-            var player = await Get('player').catch(() => {
+            var player = await Get('ownplayer').catch(() => {
                 dispatch({ type: Actions.FAILED_FETCHING_CURR_PLAYER });
                 return;
             });            
             dispatch({ type: Actions.FINISHED_FETCHING_CURR_PLAYER, payload: player })
         }
     },
-    getAPlayer: (tag: string) => {
+    getAPlayer: (id: string) => {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_FETCHING_PLAYERS })
-            var player = await Get('player/' + tag).catch(() => {
-                dispatch({ type: Actions.FAILED_FETCHING_SINGLE_PLAYER, payload: `Player ${tag} not found` });
+            var player = await Get('player/' + id).catch(() => {
+                dispatch({ type: Actions.FAILED_FETCHING_SINGLE_PLAYER, payload: `Player ${id} not found` });
                 return;
             });            
             dispatch({ type: Actions.FINISHED_FETCHING_SINGLE_PLAYER, payload: player })
@@ -173,8 +173,7 @@ export interface IAction {
 
 export interface IApplicationState {
     currentUser: User,
-    currentPlayer: Player,
-    selectedPlayer: Player,
+    currentPlayer: Player,    
     allPlayers: Player[],
     isLoadingUser: boolean,
     isFetchingPlayers: boolean,
@@ -189,8 +188,7 @@ export interface IApplicationState {
 }
 
 const initalState: IApplicationState = {
-    currentPlayer: null,
-    selectedPlayer: null,
+    currentPlayer: null,    
     allPlayers: [],
     currentUser: null,
     isLoadingUser: false,

@@ -1,32 +1,39 @@
 import * as React from 'react'
 import { IApplicationState, ActionCreators } from '../store/reducer';
-import { Player as domainPlayer } from '../domain/player';
-import { connect } from 'react-redux';
+import { Player as domainPlayer, Player } from '../domain/player';
 var Option = require('muicss/lib/react/option')
 var Select = require('muicss/lib/react/select')
 var Button = require('muicss/react').Button
 var Input = require('muicss/lib/react/input')
-type props = IApplicationState & typeof ActionCreators
+
 import ClassSelector from './classSelector'
 import ClassBadge from './classbadge'
 var PulseLoader = require('halogenium').PulseLoader;
 import ImgButton from './imgbutton'
+
+interface props {
+    currentPlayer: Player
+    currentUser: any
+    isSavingPlayer: boolean
+    savePlayer: (player: Player) => void
+}
 
 interface state {
     player: domainPlayer,
     classSelectorVisible: boolean
 }
 
-class Characters extends React.Component<props, state>{
+export default class EditCharacter extends React.Component<props, state>{
     constructor(props: props) {
         super(props);
         this.state = {
             player: {
+                ownername: "A new character",
                 spec: "DPS",
                 faction: "Horde",
                 class: "Druid",
                 pvpEnabled: true,
-                email: "",                
+                email: "",
                 born: new Date(),
                 type: "",
                 about: "",
@@ -38,14 +45,14 @@ class Characters extends React.Component<props, state>{
 
     componentWillReceiveProps(nextProps: props) {
         if (nextProps.currentPlayer) {
-            this.setState({
+            this.setState({ 
                 player: {
                     ...this.state.player,
                     spec: nextProps.currentPlayer.spec,
                     faction: nextProps.currentPlayer.faction,
                     class: nextProps.currentPlayer.class,
                     pvpEnabled: nextProps.currentPlayer.pvpEnabled,
-                    email: nextProps.currentPlayer.email ? nextProps.currentPlayer.email : "",                    
+                    email: nextProps.currentPlayer.email ? nextProps.currentPlayer.email : "",
                     born: nextProps.currentPlayer.born,
                     type: nextProps.currentPlayer.type,
                     about: nextProps.currentPlayer.about,
@@ -65,18 +72,15 @@ class Characters extends React.Component<props, state>{
         })
     }
 
-    componentDidMount() {
-        this.props.getOwnPlayer();
-    }
-
     render() {
         if (!this.props.currentUser) return "Please log in join the clan!";
-        if (this.props.isFetchingPlayers) return <PulseLoader color="#26A65B" size="16px" margin="4px" />
+
         return (
             <div style={{
                 display: "flex"
             }}>
                 <div style={{ width: "400px", }}>
+                    {this.props.currentPlayer && <h1>{this.props.currentPlayer.ownername}</h1>}
                     <label>Faction:</label> {this.state.player.faction}
                     <div style={{
                         display: "flex",
@@ -145,8 +149,3 @@ class Characters extends React.Component<props, state>{
         )
     }
 }
-
-export default connect(
-    (state: IApplicationState) => state,
-    ActionCreators
-)(Characters)

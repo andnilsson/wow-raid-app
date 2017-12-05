@@ -12,7 +12,7 @@ type props = IApplicationState & typeof ActionCreators
 var Button = require('muicss/react').Button;
 import * as en from 'linq';
 var Input = require('muicss/lib/react/input')
-
+import { Link } from 'react-router-dom';
 
 const properties = [
     { displayName: "Player", property: "ownername" },
@@ -51,7 +51,10 @@ class Clan extends React.Component<props, state>{
     }
 
     componentDidMount() {
-        this.props.getAllPlayers();
+        if(this.props.allPlayers.length < 1)
+            this.props.getAllPlayers();
+        else         
+            this.setState({players: this.props.allPlayers})
     }
 
     resetSortAndFilter() {
@@ -133,7 +136,7 @@ class Clan extends React.Component<props, state>{
                                     {properties.map((prop, x) => {
 
                                         if (prop.property === "ownername") {
-                                            return <div key={x} className="divTableCell"><a href={`/characters/${player._id}`}>{player.ownername}</a></div>
+                                            return <div key={x} className="divTableCell"><Link to={`/characters/${player._id}`}>{player.ownername}</Link></div>
                                         }
                                         else if (prop.property === "class") {
                                             return <div style={{

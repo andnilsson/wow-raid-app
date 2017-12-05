@@ -87,6 +87,10 @@ var repo = {
             mongo.connect(connectionstring, function (err, db) {
                 if (err) reject(err);
                 console.log(playerid);
+                if(!playerid || playerid === "undefined"){
+                    reject();
+                    return;
+                }
                 var id = ObjectID(playerid);
                 db.collection("players").find({
                     _id: id
