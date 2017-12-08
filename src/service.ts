@@ -51,9 +51,12 @@ export async function Get<T>(path: string): Promise<T> {
                     return;
                 }
                 if (this.status == 200) {
-                    try{
-                    resolve(JSON.parse(this.responseText))
-                    } catch(e){
+                    try {
+                        if (this.responseText)
+                            resolve(JSON.parse(this.responseText))
+                        else
+                            resolve();
+                    } catch (e) {
                         console.log(e);
                         console.log(path);
                         reject(e);

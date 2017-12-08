@@ -5,7 +5,7 @@ var Option = require('muicss/lib/react/option')
 var Select = require('muicss/lib/react/select')
 var Button = require('muicss/react').Button
 var Input = require('muicss/lib/react/input')
-
+var Button = require('muicss/react').Button;
 import ClassSelector from './classSelector'
 import ClassBadge from './classbadge'
 var PulseLoader = require('halogenium').PulseLoader;
@@ -16,6 +16,7 @@ interface props {
     currentUser: any
     isSavingPlayer: boolean
     savePlayer: (player: Player) => void
+    userIsAdmin: boolean
 }
 
 interface state {
@@ -44,8 +45,8 @@ export default class EditCharacter extends React.Component<props, state>{
 
     componentDidMount() {
         this.setState({
-            player: {           
-                ...this.state.player,  
+            player: {
+                ...this.state.player,
                 spec: this.props.currentPlayer.spec,
                 faction: this.props.currentPlayer.faction,
                 class: this.props.currentPlayer.class,
@@ -58,6 +59,28 @@ export default class EditCharacter extends React.Component<props, state>{
             }
         })
 
+    }
+
+    promoteToAdmin() {
+        this.setState({
+            player: {
+                ...this.state.player,
+                isAdmin: true
+            }
+        }, () => {
+            this.props.savePlayer(this.state.player)
+        })
+    }
+
+    demoteAdmin() {
+        this.setState({
+            player: {
+                ...this.state.player,
+                isAdmin: false
+            }
+        }, () => {
+            this.props.savePlayer(this.state.player)
+        })
     }
 
     classWasSelected(classname: string) {
@@ -79,6 +102,12 @@ export default class EditCharacter extends React.Component<props, state>{
             }}>
                 <div style={{ width: "400px", }}>
                     {this.props.currentPlayer && <h1>{this.props.currentPlayer.ownername}</h1>}
+                    {this.props.userIsAdmin && this.props.currentPlayer.isAdmin ? (
+                        <Button variant="raised" color="secondary" onClick={() => this.promoteToAdmin()}>Revoke Admin</Button>
+                    ) : this.props.userIsAdmin && !this.props.currentPlayer.isAdmin ? (
+                        <Button variant="raised" color="primary" onClick={() => this.demoteAdmin()}>Promote to admin</Button>
+                    ) : null}
+                    <br />
                     <label>Faction:</label> {this.state.player.faction}
                     <div style={{
                         display: "flex",

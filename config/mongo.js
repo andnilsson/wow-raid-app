@@ -68,6 +68,7 @@ var repo = {
                         db.close();
                     });
                 } else {
+                    player.createdOn = new Date();
                     db.collection("players").insertOne(player, function (err, res) {
                         if (err) reject(err);
                         resolve();
