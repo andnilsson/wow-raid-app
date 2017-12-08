@@ -2,7 +2,7 @@ var mongo = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 const config = require('./keys');
 var connectionstring = config.DOCUMENTDB_CONNECTION_STRING;
-
+var en = require('linq');
 var repo = {
     getAllBoardMessages: async function (page) {
         page = page - 1;
@@ -124,7 +124,8 @@ var repo = {
                 if (err) reject(err);
                 db.collection("players").find({}).toArray(function (err, result) {
                     if (err) reject(err);
-                    resolve(result);
+                    var players = en.from(result).where(x => !x.hidden).toArray();
+                    resolve(players);
                     db.close();
                 });
             });
