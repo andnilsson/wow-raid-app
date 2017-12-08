@@ -14,5 +14,6 @@ export class Player {
     rank: string
     type: string
     about: string
+    guildLeader: boolean
     isAdmin: boolean //dont worry, also server side validated
 }

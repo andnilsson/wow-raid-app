@@ -137,8 +137,8 @@ class Clan extends React.Component<props, state>{
                                     {properties.map((prop, x) => {
 
                                         if (prop.property === "ownername") {
-                                            return <div key={x} className="divTableCell"><Link to={`/characters/${player._id}`}>{player.ownername}</Link></div>
-                                        }
+                                            return <div key={x} className={player.guildLeader ? "divTableCell guildleader" : "divTableCell"}><Link to={`/characters/${player._id}`}>{player.ownername}</Link>{player.guildLeader && <span className="leaderspan">Guild Leader</span>}</div>
+                                        }                                        
                                         else if (prop.property === "class") {
                                             return <div style={{
                                                 backgroundColor: getClassColor(player.class).backgroundColor,
