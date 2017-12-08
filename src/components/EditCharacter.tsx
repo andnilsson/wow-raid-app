@@ -5,7 +5,7 @@ var Option = require('muicss/lib/react/option')
 var Select = require('muicss/lib/react/select')
 var Button = require('muicss/react').Button
 var Input = require('muicss/lib/react/input')
-
+var Button = require('muicss/react').Button;
 import ClassSelector from './classSelector'
 import ClassBadge from './classbadge'
 var PulseLoader = require('halogenium').PulseLoader;
@@ -16,6 +16,7 @@ interface props {
     currentUser: any
     isSavingPlayer: boolean
     savePlayer: (player: Player) => void
+    userIsAdmin: boolean
 }
 
 interface state {
@@ -44,8 +45,8 @@ export default class EditCharacter extends React.Component<props, state>{
 
     componentDidMount() {
         this.setState({
-            player: {           
-                ...this.state.player,  
+            player: {
+                ...this.state.player,
                 spec: this.props.currentPlayer.spec,
                 faction: this.props.currentPlayer.faction,
                 class: this.props.currentPlayer.class,
@@ -58,6 +59,28 @@ export default class EditCharacter extends React.Component<props, state>{
             }
         })
 
+    }
+
+    promoteToAdmin() {
+        this.setState({
+            player: {
+                ...this.state.player,
+                isAdmin: true
+            }
+        }, () => {
+            this.props.savePlayer(this.state.player)
+        })
+    }
+
+    demoteAdmin() {
+        this.setState({
+            player: {
+                ...this.state.player,
+                isAdmin: false
+            }
+        }, () => {
+            this.props.savePlayer(this.state.player)
+        })
     }
 
     classWasSelected(classname: string) {
@@ -79,6 +102,12 @@ export default class EditCharacter extends React.Component<props, state>{
             }}>
                 <div style={{ width: "400px", }}>
                     {this.props.currentPlayer && <h1>{this.props.currentPlayer.ownername}</h1>}
+                    {this.props.userIsAdmin && this.props.currentPlayer.isAdmin ? (
+                        <Button variant="raised" color="secondary" onClick={() => this.promoteToAdmin()}>Revoke Admin</Button>
+                    ) : this.props.userIsAdmin && !this.props.currentPlayer.isAdmin ? (
+                        <Button variant="raised" color="primary" onClick={() => this.demoteAdmin()}>Promote to admin</Button>
+                    ) : null}
+                    <br />
                     <label>Faction:</label> {this.state.player.faction}
                     <div style={{
                         display: "flex",
@@ -105,14 +134,14 @@ export default class EditCharacter extends React.Component<props, state>{
                     Class:<br />
                     <ClassBadge classname={this.state.player.class} onClick={() => this.setState({ classSelectorVisible: true })} />
 
-                    <Select label="Spec" defaultValue={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
+                    <Select label="Spec" value={this.state.player.spec} onChange={(e: any) => { this.setState({ player: { ...this.state.player, spec: e.target.value } }) }}>
                         <Option value="" label="---" />
                         <Option value="DPS" label="DPS" />
                         <Option value="Healer" label="Healer" />
                         <Option value="Tank" label="Tank" />
                     </Select>
 
-                    <Select label="PVP Enabled server" defaultValue={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
+                    <Select label="PVP Enabled server" value={this.state.player.pvpEnabled} onChange={(e: any) => { this.setState({ player: { ...this.state.player, pvpEnabled: e.target.value === "true" } }) }}>
                         <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
@@ -120,13 +149,13 @@ export default class EditCharacter extends React.Component<props, state>{
 
                     <Input label="Email" floatingLabel={true} value={this.state.player.email} onChange={(e: any) => this.setState({ player: { ...this.state.player, email: e.target.value } })} />
 
-                    <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" defaultValue={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
+                    <Select label="Tillåt email notiser (dvs. du får email när det händer saker här)" value={this.state.player.emailNotifications} onChange={(e: any) => { this.setState({ player: { ...this.state.player, emailNotifications: e.target.value === "true" } }) }}>
                         <Option value="" label="---" />
                         <Option value="true" label="Yes" />
                         <Option value="false" label="No" />
                     </Select>
 
-                    <Select label="Typ av spelare" defaultValue={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
+                    <Select label="Typ av spelare" value={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
                         <Option value="" label="---" />
                         <Option value="Raid Leader" label="Raid Leader" />
                         <Option value="Class leader" label="Class leader" />

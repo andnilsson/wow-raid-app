@@ -9,7 +9,7 @@ import { Player } from '../domain/player';
 
 type props = IApplicationState & typeof ActionCreators
 interface state {
-    selectedPlayer: Player;
+    selectedPlayer: Player
 }
 class DisplayEditCharacter extends React.Component<props, state>{
     constructor(props: props) {
@@ -26,56 +26,60 @@ class DisplayEditCharacter extends React.Component<props, state>{
         } catch (e) { return null; }
     }
 
-    setPlayer() {        
-        var id = this.getId();                
+    setPlayer() {
+        var id = this.getId();
 
-        if(!id){
-            if(!this.props.currentUser) return;
+        if (!id) {
+            if (!this.props.currentUser) return;
 
-            var player = this.props.currentPlayer || en.from(this.props.allPlayers).where(x => x.ownerid == this.props.currentUser.id).firstOrDefault();
-            if(!player){
-                if(!this.props.isFetchingPlayers)
-                    this.props.getAllPlayers()
+            var player = this.props.ownPlayer || en.from(this.props.allPlayers).where(x => x.ownerid == this.props.currentUser.id).firstOrDefault();
+            if (!player) {
+                if (!this.props.isFetchingPlayers)
+                    this.props.getOwnPlayer()
                 return;
             }
 
-            this.setState({selectedPlayer: player});
+            this.setState({ selectedPlayer: player });
             return;
         }
 
         var player = en.from(this.props.allPlayers).where(x => x._id == id).firstOrDefault();
-        if(player){
-            this.setState({selectedPlayer: player})
+        if (player) {
+            this.setState({ selectedPlayer: player })
             return;
         }
 
-        if(!this.props.isFetchingPlayers){
+        if (!this.props.isFetchingPlayers) {
             this.props.getAllPlayers()
         }
 
     }
 
     componentWillReceiveProps(nextprops: props) {
-        if(!this.state.selectedPlayer)
+        if (!this.state.selectedPlayer)
             this.setPlayer();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.setPlayer();
+
+        if(!this.props.ownPlayer)
+            this.props.getOwnPlayer();
     }
 
-    
+
     render() {
         var id = this.getId();
         if (!this.props.currentUser && !this.state.selectedPlayer) return "Du måste logga in"
         if (this.props.isFetchingPlayers || this.state.selectedPlayer == null) return <PulseLoader color="#26A65B" size="16px" margin="4px" />
 
-        if ((this.props.currentUser && this.props.currentUser.id == this.state.selectedPlayer.ownerid) || (this.props.currentPlayer && this.props.currentPlayer.isAdmin))
+        if ((this.props.currentUser && this.props.currentUser.id == this.state.selectedPlayer.ownerid) || (this.props.ownPlayer && this.props.ownPlayer.isAdmin))
             return <EditCharacter
                 currentPlayer={this.state.selectedPlayer}
                 currentUser={this.props.currentUser}
                 isSavingPlayer={this.props.isSavingPlayer}
                 savePlayer={this.props.savePlayer}
+                userIsAdmin={this.props.ownPlayer && this.props.ownPlayer.isAdmin}
             />
         else
             return <ShowCharacter

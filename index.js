@@ -77,6 +77,11 @@ app.get('/api/player/:id', async (req, res) => {
 app.get('/api/ownplayer', requireLogin, async (req, res) => {
     if (!req.user) throw "no user found";
     var player = await repo.getPlayer(req.user.id);
+    if (!player) {
+        res.send();
+        return;
+    }
+
     res.send(player);
 });
 
@@ -129,8 +134,21 @@ app.post('/api/player', requireLogin, async (req, res) => {
     if (!req.user.isAdmin) {
         req.body.isAdmin = false;
         req.body.ownerid = req.user.id;
-        req.body.ownername = req.user.battletag;        
-    }    
+        req.body.ownername = req.user.battletag;
+
+        var existing = await repo.getPlayer(req.body.ownerid);
+        if(existing)
+            req.body._id = existing._id;
+    } else {
+        var existing = await repo.getPlayerById(req.body._id);
+        if(!existing) {
+            res.status = 500
+            res.body(`player with id ${req.body._id} not found`)
+            return;
+        }
+        req.body.ownerid = existing.ownerid;
+        req.body.ownername = existing.ownername;
+    }
 
     await repo.saveplayer(req.body);
     res.send();
