@@ -2,7 +2,7 @@ var mongo = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 const config = require('./keys');
 var connectionstring = config.DOCUMENTDB_CONNECTION_STRING;
-
+var en = require('linq');
 var repo = {
     getAllBoardMessages: async function (page) {
         page = page - 1;
@@ -18,28 +18,28 @@ var repo = {
             });
         });
     },
-    deletePlayer: async function(id) {
-        return new Promise((resolve,reject) => {
+    deletePlayer: async function (id) {
+        return new Promise((resolve, reject) => {
             mongo.connect(connectionstring, function (err, db) {
-                if (err) reject(err);                
+                if (err) reject(err);
                 db.collection("players").deleteOne({ _id: ObjectID(id) }, function (err, res) {
                     if (err) reject(err);
                     resolve();
                     db.close();
                 });
-            }); 
+            });
         });
     },
-    deleteBoardMessage: async function(id) {
-        return new Promise((resolve,reject) => {
+    deleteBoardMessage: async function (id) {
+        return new Promise((resolve, reject) => {
             mongo.connect(connectionstring, function (err, db) {
-                if (err) reject(err);                
+                if (err) reject(err);
                 db.collection("boardmessages").deleteOne({ _id: ObjectID(id) }, function (err, res) {
                     if (err) reject(err);
                     resolve();
                     db.close();
                 });
-            }); 
+            });
         });
     },
     saveBoardMessage: async function (message) {
@@ -94,13 +94,13 @@ var repo = {
                 });
             });
         })
-    },    
+    },
     getPlayerById: async function (playerid) {
-        return new Promise((resolve, reject) => {           
+        return new Promise((resolve, reject) => {
             mongo.connect(connectionstring, function (err, db) {
                 if (err) reject(err);
                 console.log(playerid);
-                if(!playerid || playerid === "undefined"){
+                if (!playerid || playerid === "undefined") {
                     reject();
                     return;
                 }
@@ -124,7 +124,8 @@ var repo = {
                 if (err) reject(err);
                 db.collection("players").find({}).toArray(function (err, result) {
                     if (err) reject(err);
-                    resolve(result);
+                    var players = en.from(result).where(x => !x.hidden).toArray();
+                    resolve(players);
                     db.close();
                 });
             });
