@@ -18,8 +18,10 @@ var repo = {
             });
         });
     },
-    deletePlayer: async function (id) {
-        return new Promise((resolve, reject) => {
+
+    
+    deletePlayer: async function(id) {
+        return new Promise((resolve,reject) => {
             mongo.connect(connectionstring, function (err, db) {
                 if (err) reject(err);
                 db.collection("players").deleteOne({ _id: ObjectID(id) }, function (err, res) {
