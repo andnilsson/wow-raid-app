@@ -12,7 +12,7 @@
     "proxy": "node .\\node_modules\\dyn365-dev-proxy\\server.js",
     "watch-wowapp": "webpack -w --config webpack.wowapp.config.js",
     "start-wowapp": "concurrently \"npm run watch-wowapp\" \"node index.js\"",
-    "build-wowapp": "webpack -p --config webpack.wowapp.config.js"
+    "build-wowapp": "webpack -p --config webpack.wowapp.config.js"    
   },
   "author": "and.nil",
   "license": "ISC",
@@ -62,7 +62,7 @@
     "ts-loader": "^3.0.2",
     "typescript": "^2.5.3",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.3",
-    "webpack": "^3.10.0",
+    "webpack": "^3.8.0",
     "webpack-dev-server": "^2.9.3",
     "webpack-visualizer-plugin": "^0.1.11"
   }
