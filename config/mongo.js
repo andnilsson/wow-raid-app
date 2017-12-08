@@ -18,6 +18,8 @@ var repo = {
             });
         });
     },
+
+    
     deletePlayer: async function(id) {
         return new Promise((resolve,reject) => {
             mongo.connect(connectionstring, function (err, db) {
