@@ -36,7 +36,7 @@ export default class EditCharacter extends React.Component<props, state>{
                 pvpEnabled: null,
                 email: "",
                 born: new Date(),
-                type: "",
+                status: "",
                 about: "",
                 emailNotifications: true
             } as domainPlayer,
@@ -59,7 +59,7 @@ export default class EditCharacter extends React.Component<props, state>{
                 pvpEnabled: this.props.currentPlayer.pvpEnabled,
                 email: this.props.currentPlayer.email ? this.props.currentPlayer.email : "",
                 born: this.props.currentPlayer.born,
-                type: this.props.currentPlayer.type,
+                status: this.props.currentPlayer.status,
                 about: this.props.currentPlayer.about,
                 _id: this.props.currentPlayer._id
             }
@@ -163,7 +163,7 @@ export default class EditCharacter extends React.Component<props, state>{
                     </Select>
 
                     {this.props.userIsAdmin ? (
-                        <Select label="Typ av spelare" value={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
+                        <Select label="Typ av spelare" value={this.state.player.status} onChange={(e: any) => { this.setState({ player: { ...this.state.player, status: e.target.value } }) }}>
                             <Option value="" label="---" />
                             <Option value="Raid Leader" label="Raid Leader" />
                             <Option value="Class leader" label="Class leader" />
