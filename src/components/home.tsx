@@ -10,7 +10,8 @@ type props = IApplicationState & typeof ActionCreators
 
 class Home extends React.Component<props, {}>{
     componentDidMount() {
-        this.props.getAllPlayers();
+        if (this.props.allPlayers.length < 1)
+            this.props.getAllPlayers();
     }
 
     getPercentage(needle: string, haystack: en.IEnumerable<string>): number {
@@ -41,7 +42,7 @@ class Home extends React.Component<props, {}>{
             return {
                 name: f,
                 y: self.getPercentage(f, en.from(this.props.allPlayers).select(x => x.faction)),
-                color: f.toLowerCase() == "horde"? "#322222": "#222233"
+                color: f.toLowerCase() == "horde" ? "#322222" : "#222233"
             }
         })
         return data;
