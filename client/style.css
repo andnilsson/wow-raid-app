@@ -129,8 +129,10 @@ div.playertable {
     padding: 10px
   }
   .divTable.playertable .divTableBody .divTableCell {
-    font-size: 13px;
-    
+    font-size: 13px;    
+  }
+  .guildleader{
+      background-color: #352a2a;      
   }
   .divTable.playertable .divTableRow:nth-child(even) {
     background: #464646;
@@ -347,4 +349,7 @@ textarea{
     display: flex;
     flex-direction: column;
     align-content: space-between;
+}
+.leaderspan{
+    margin-left: 30px;
 }

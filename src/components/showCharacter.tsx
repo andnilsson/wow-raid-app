@@ -29,6 +29,7 @@ export default class ShowCharacter extends React.Component<props, {}>{
 
         return <div>
             <h1>{this.props.selectedPlayer.ownername}</h1>
+            {this.props.selectedPlayer.guildLeader && <h4>Guild Leader</h4>}
             <b>Faction:</b> {this.props.selectedPlayer.faction}<br />
             <b>Class:</b> {this.props.selectedPlayer.class}<br />
             <b>Spec:</b> {this.props.selectedPlayer.spec}<br />
