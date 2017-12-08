@@ -22,7 +22,7 @@ class Board extends React.Component<props, state>{
         this.props.getOwnPlayer();
         this.props.fetchBoardMessages();
     }
-    createBoardMessage() {        
+    createBoardMessage() {
         this.props.saveBoardMessage({
             text: this.state.newtext
         } as BoardMessage);
@@ -31,25 +31,25 @@ class Board extends React.Component<props, state>{
     render() {
         if (this.props.isFetchingBoard || this.props.isFetchingPlayers) return <PulseLoader color="#26A65B" size="16px" margin="4px" />
         if (!this.props.currentUser) return "Please log in join the clan!";
-        if (!this.props.currentPlayer) return "Du måste skapa en karaktär innan du får skriva här"
+        if (!this.props.ownPlayer) return "Du måste skapa en karaktär innan du får skriva här"
         return (
             <div>
                 <h1>Board</h1>
 
                 <div className="board-message-wrapper">
                     <div className="message-header">
-                        <img src={getImgUrl(this.props.currentPlayer.class)} />
+                        <img src={getImgUrl(this.props.ownPlayer.class)} />
                         <h5 style={{ marginLeft: "10px" }}>{this.props.currentUser.battletag}</h5>
                     </div>
                     <div className="message-body">
                         <textarea placeholder={`Skriv något, ${this.props.currentUser.battletag}!`} value={this.state.newtext} onChange={(e) => this.setState({ newtext: e.target.value })}></textarea>
-                        <Button variant="raised" color="primary" onClick={() => this.createBoardMessage()}>Skriv</Button>
+                        {this.state.newtext && <Button variant="raised" color="primary" onClick={() => this.createBoardMessage()}>Skriv</Button>}
                     </div>
                 </div>
                 <div className="board-messages">
                     {
                         this.props.boardMessages.map((m, i) => {
-                            return <BoardMessageDisplayer key={i} message={m} />
+                            return <BoardMessageDisplayer key={i} message={m} isAdmin={this.props.ownPlayer.isAdmin} deleteMessage={() => this.props.deleteBoardMessage(m._id)} />
                         })
                     }
                 </div>

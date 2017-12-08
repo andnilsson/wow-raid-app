@@ -1,13 +1,17 @@
 import * as React from 'react'
 import { ActionCreators, IApplicationState } from '../store/reducer';
-import { connect } from 'react-redux';
 import { error } from 'util';
-var PulseLoader = require('halogenium').PulseLoader;
-type props = IApplicationState & typeof ActionCreators
 import anchorme from "anchorme"
 import * as moment from 'moment'
+import { Player } from '../domain/player';
 
-class ShowCharacter extends React.Component<props, {}>{
+interface props {    
+    selectedPlayer: Player
+    error: string    
+    id: string
+}
+
+export default class ShowCharacter extends React.Component<props, {}>{
     getUnsafeText(text: string): string{
         if(!text || text === "") return "";
         var str = text;
@@ -19,16 +23,8 @@ class ShowCharacter extends React.Component<props, {}>{
         });
         return str;
     }
-    componentDidMount(){
-        this.props.getAPlayer(this.getId())
-    }
-    getId() {
-        try {
-            return (this.props as any).match.params.id + (this.props as any).location.hash
-        } catch (e) { return "could not read parameter"; }
-    }
-    render() {  
-        if (this.props.isFetchingPlayers) return <PulseLoader color="#26A65B" size="16px" margin="4px" />
+   
+    render() {       
         if(!this.props.selectedPlayer) return this.props.error || "player not found";
 
         return <div>
@@ -36,8 +32,7 @@ class ShowCharacter extends React.Component<props, {}>{
             <b>Faction:</b> {this.props.selectedPlayer.faction}<br />
             <b>Class:</b> {this.props.selectedPlayer.class}<br />
             <b>Spec:</b> {this.props.selectedPlayer.spec}<br />
-            <b>Pvp Enabled servers:</b> {this.props.selectedPlayer.pvpEnabled ? "Ja" : "Nej"}<br />
-            <b>Rank:</b> {this.props.selectedPlayer.rank}<br />
+            <b>Pvp Enabled servers:</b> {this.props.selectedPlayer.pvpEnabled ? "Ja" : "Nej"}<br />            
             <b>Status:</b> {this.props.selectedPlayer.status}<br />
             <b>Typ:</b> {this.props.selectedPlayer.type}<br />
 
@@ -46,7 +41,3 @@ class ShowCharacter extends React.Component<props, {}>{
     }
 }
 
-export default connect(
-    (state: IApplicationState) => state,
-    ActionCreators
-)(ShowCharacter)
