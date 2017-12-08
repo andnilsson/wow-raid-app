@@ -9,13 +9,13 @@ export const Classes = [
 
     },
     {
-        img: "https://www.jinx.com/productimage/767/99/1/900.jpg",
+        img: "http://nostalrius.net/img/icon-hunter.png",
         name: "Hunter",
         color: "#ABD473",
         textColor: "#fff"
     },
     {
-        img: "https://www.jinx.com/productimage/771/99/1/900.jpg",
+        img: "http://www.gnarlyguides.com/wp-content/uploads/2016/04/mage-wow-3-3-5a.png",
         name: "Mage",
         color: "#69CCF0",
         textColor: "#fff"
@@ -51,7 +51,7 @@ export const Classes = [
         textColor: "#fff"
     },
     {
-        img: "http://cdn-wow.mmoui.com/preview/pvw68030.png",
+        img: "http://www.gnarlyguides.com/wp-content/uploads/2016/04/warrior-wow-3-3-5a.png",
         name: "Warrior",
         color: "#C79C6E",
         textColor: "#fff"
