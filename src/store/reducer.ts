@@ -133,8 +133,9 @@ export const ActionCreators = {
         return async (dispatch: any) => {
             dispatch({ type: Actions.STARTED_SAVING_PLAYER })
             var id = await Post('player', player);
-                        
-            dispatch({ type: Actions.FINISHED_SAVING_PLAYER, payload: player })            
+
+            dispatch({ type: Actions.FINISHED_SAVING_PLAYER, payload: player })
+            dispatch(ActionCreators.getAllPlayers())
         }
     },
     getOwnPlayer: () => {
@@ -202,7 +203,8 @@ export interface IApplicationState {
     onlineusers: string[],
     boardMessages: BoardMessage[],
     isSavingBoardMessage: boolean,
-    isFetchingBoard: boolean
+    isFetchingBoard: boolean,
+    playerWasSaved: boolean
 }
 
 const initalState: IApplicationState = {
@@ -219,10 +221,11 @@ const initalState: IApplicationState = {
     onlineusers: [],
     boardMessages: [],
     isSavingBoardMessage: false,
-    isFetchingBoard: false
+    isFetchingBoard: false,
+    playerWasSaved: false
 }
 
-export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {    
+export const reducer: Reducer<IApplicationState> = (state: IApplicationState, action: IAction) => {
 
     switch (action.type) {
         case Actions.STARTED_DELETING_PLAYER: return { ...state, isDeleting: true }
@@ -269,8 +272,8 @@ export const reducer: Reducer<IApplicationState> = (state: IApplicationState, ac
         case Actions.FINISHED_FETCHING_SINGLE_PLAYER: return { ...state, isFetchingPlayers: false, selectedPlayer: action.payload }
         case Actions.FAILED_FETCHING_SINGLE_PLAYER: return { ...state, isFetchingPlayers: false, error: action.payload }
 
-        case Actions.STARTED_SAVING_PLAYER: return { ...state, isSavingPlayer: true }
-        case Actions.FINISHED_SAVING_PLAYER: return { ...state, isSavingPlayer: false, allPlayers: state.allPlayers.map((p,i) => { return p._id === action.payload.id ? action.payload : p}) }
+        case Actions.STARTED_SAVING_PLAYER: return { ...state, isSavingPlayer: true, playerWasSaved: false }
+        case Actions.FINISHED_SAVING_PLAYER: return { ...state, isSavingPlayer: false, playerWasSaved: true, allPlayers: state.allPlayers.map((p, i) => { return p._id === action.payload.id ? action.payload : p }) }
         default: return initalState
     }
 };

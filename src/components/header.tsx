@@ -13,8 +13,7 @@ class Header extends React.Component<{}, {}>{
                     </h1>
                     <Link to="/characters">Min character</Link>
                     <Link to="/members">Spelare</Link>
-                    <Link to="/rules">FAQ</Link>
-                    <Link to="/board">Board</Link>
+                    <Link to="/rules">FAQ</Link>                    
                 </div>
 
                 <div className="header-login">

@@ -137,11 +137,15 @@ app.post('/api/player', requireLogin, async (req, res) => {
         req.body.ownername = req.user.battletag;
 
         var existing = await repo.getPlayer(req.body.ownerid);
-        if(existing)
+        if (existing)
             req.body._id = existing._id;
+        else {
+            req.body.createdOn = new Date();
+            req.body.status = "Rookie"
+        }
     } else {
         var existing = await repo.getPlayerById(req.body._id);
-        if(!existing) {
+        if (!existing) {
             res.status = 500
             res.body(`player with id ${req.body._id} not found`)
             return;

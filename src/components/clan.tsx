@@ -13,14 +13,14 @@ var Button = require('muicss/react').Button;
 import * as en from 'linq';
 var Input = require('muicss/lib/react/input')
 import { Link } from 'react-router-dom';
-
+import * as moment from 'moment'
 const properties = [
     { displayName: "Player", property: "ownername" },
     { displayName: "Faction", property: "faction" },
     { displayName: "Class", property: "class" },
     { displayName: "Spec", property: "spec" },
     { displayName: "Pvp Enabled", property: "pvpEnabled", transformation: (value: boolean) => { return value ? "Yes" : "No" } },
-    { displayName: "Registered", property: "createdOn" },
+    { displayName: "Registered", property: "createdOn", transformation: (value: string) => { return value && value !== "" ? moment(value).format('YYYY-MM-DD HH:ss'): "" } },
     { displayName: "Status", property: "status" },
 ]
 
@@ -51,10 +51,10 @@ class Clan extends React.Component<props, state>{
     }
 
     componentDidMount() {
-        if(this.props.allPlayers.length < 1)
+        if (this.props.allPlayers.length < 1)
             this.props.getAllPlayers();
-        else         
-            this.setState({players: this.props.allPlayers})
+        else
+            this.setState({ players: this.props.allPlayers })
     }
 
     resetSortAndFilter() {
@@ -138,7 +138,7 @@ class Clan extends React.Component<props, state>{
 
                                         if (prop.property === "ownername") {
                                             return <div key={x} className={player.guildLeader ? "divTableCell guildleader" : "divTableCell"}><Link to={`/characters/${player._id}`}>{player.ownername}</Link>{player.guildLeader && <span className="leaderspan">Guild Leader</span>}</div>
-                                        }                                        
+                                        }
                                         else if (prop.property === "class") {
                                             return <div style={{
                                                 backgroundColor: getClassColor(player.class).backgroundColor,

@@ -16,12 +16,13 @@ interface props {
     currentUser: any
     isSavingPlayer: boolean
     savePlayer: (player: Player) => void
-    userIsAdmin: boolean
+    userIsAdmin: boolean,
+    saved: boolean
 }
 
 interface state {
     player: domainPlayer,
-    classSelectorVisible: boolean
+    classSelectorVisible: boolean,    
 }
 
 export default class EditCharacter extends React.Component<props, state>{
@@ -39,8 +40,13 @@ export default class EditCharacter extends React.Component<props, state>{
                 about: "",
                 emailNotifications: true
             } as domainPlayer,
-            classSelectorVisible: false
+            classSelectorVisible: false,
+            
         }
+    }
+
+    save() {
+        this.props.savePlayer(this.state.player);        
     }
 
     componentDidMount() {
@@ -101,6 +107,7 @@ export default class EditCharacter extends React.Component<props, state>{
                 display: "flex"
             }}>
                 <div style={{ width: "400px", }}>
+                    {this.props.saved && <h1 style={{color: "red"}}>Sparat!</h1>}
                     {this.props.currentPlayer && <h1>{this.props.currentPlayer.ownername}</h1>}
                     {this.props.userIsAdmin && this.props.currentPlayer.isAdmin ? (
                         <Button variant="raised" color="secondary" onClick={() => this.promoteToAdmin()}>Revoke Admin</Button>
@@ -155,13 +162,17 @@ export default class EditCharacter extends React.Component<props, state>{
                         <Option value="false" label="No" />
                     </Select>
 
-                    <Select label="Typ av spelare" value={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
-                        <Option value="" label="---" />
-                        <Option value="Raid Leader" label="Raid Leader" />
-                        <Option value="Class leader" label="Class leader" />
-                        <Option value="Raid member" label="Raid member" />
-                        <Option value="Casual member" label="Casual member" />
-                    </Select>
+                    {this.props.userIsAdmin ? (
+                        <Select label="Typ av spelare" value={this.state.player.type} onChange={(e: any) => { this.setState({ player: { ...this.state.player, type: e.target.value } }) }}>
+                            <Option value="" label="---" />
+                            <Option value="Raid Leader" label="Raid Leader" />
+                            <Option value="Class leader" label="Class leader" />
+                            <Option value="Raid member" label="Raid member" />
+                            <Option value="Casual member" label="Casual member" />
+                            <Option value="Rookie" label="Rookie" />
+                        </Select>
+                    ) : null}
+
 
                     About<br />
                     <textarea placeholder="Om dig, din wowkarriäar och annat av intresse..." style={{
@@ -171,7 +182,7 @@ export default class EditCharacter extends React.Component<props, state>{
                         color: "#000"
                     }} onChange={(e) => this.setState({ player: { ...this.state.player, about: e.target.value } })} value={this.state.player.about}></textarea>
 
-                    {this.props.isSavingPlayer ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <Button variant="raised" color="primary" onClick={() => this.props.savePlayer(this.state.player)}>{this.state.player._id ? "Save changes" : "Create new character"}</Button>}
+                    {this.props.isSavingPlayer ? <PulseLoader color="#26A65B" size="16px" margin="4px" /> : <Button variant="raised" color="primary" onClick={() => this.save()}>{this.state.player._id ? "Save changes" : "Create new character"}</Button>}
                 </div>
                 <div style={{ width: "300px", }}>
                     <ClassSelector isVisible={this.state.classSelectorVisible} classWasSelected={(c) => this.classWasSelected(c)} />

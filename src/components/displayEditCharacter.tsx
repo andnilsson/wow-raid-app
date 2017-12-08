@@ -80,6 +80,7 @@ class DisplayEditCharacter extends React.Component<props, state>{
                 isSavingPlayer={this.props.isSavingPlayer}
                 savePlayer={this.props.savePlayer}
                 userIsAdmin={this.props.ownPlayer && this.props.ownPlayer.isAdmin}
+                saved={this.props.playerWasSaved}
             />
         else
             return <ShowCharacter
