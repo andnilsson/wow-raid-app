@@ -151,6 +151,8 @@ app.post('/api/player', requireLogin, async (req, res) => {
             return;
         }
         Object.assign(player, req.body);
+        if (player.ownerid == req.user.id)
+            player.isAdmin = true;
     }
 
     await repo.saveplayer(player);
