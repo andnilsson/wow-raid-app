@@ -110,9 +110,9 @@ export default class EditCharacter extends React.Component<props, state>{
                     {this.props.saved && <h1 style={{color: "red"}}>Sparat!</h1>}
                     {this.props.currentPlayer && <h1>{this.props.currentPlayer.ownername}</h1>}
                     {this.props.userIsAdmin && this.props.currentPlayer.isAdmin ? (
-                        <Button variant="raised" color="secondary" onClick={() => this.promoteToAdmin()}>Revoke Admin</Button>
+                        <Button variant="raised" color="secondary" onClick={() => this.demoteAdmin()}>Revoke Admin</Button>
                     ) : this.props.userIsAdmin && !this.props.currentPlayer.isAdmin ? (
-                        <Button variant="raised" color="primary" onClick={() => this.demoteAdmin()}>Promote to admin</Button>
+                        <Button variant="raised" color="primary" onClick={() => this.promoteToAdmin()}>Promote to admin</Button>
                     ) : null}
                     <br />
                     <label>Faction:</label> {this.state.player.faction}
