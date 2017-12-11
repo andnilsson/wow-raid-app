@@ -137,12 +137,14 @@ app.post('/api/player', requireLogin, async (req, res) => {
         req.body.ownername = req.user.battletag;
 
         var player = await repo.getPlayer(req.body.ownerid);
-        if (player)
-            Object.assign(player, req.body);
-        else {
-            req.body.createdOn = new Date();
-            req.body.status = "Rookie"
+        if (!player) {
+            player = {};
+            player.createdOn = new Date();
+            player.status = "Rookie"
         }
+
+        Object.assign(player, req.body);
+        
     } else {
         var player = await repo.getPlayerById(req.body._id);
         if (!player) {

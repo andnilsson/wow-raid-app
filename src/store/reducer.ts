@@ -135,6 +135,7 @@ export const ActionCreators = {
             var id = await Post('player', player);
 
             dispatch({ type: Actions.FINISHED_SAVING_PLAYER, payload: player })
+            dispatch(ActionCreators.getOwnPlayer())
             dispatch(ActionCreators.getAllPlayers())
         }
     },
